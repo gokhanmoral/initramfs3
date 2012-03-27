@@ -1,0 +1,166 @@
+<settingsRoot>
+  <settingsTab name="CPU">
+    <settingsPane description="The following settings control CPU hotplug parameters. Depending on the following parameters, the second core is enabled or disabled." 
+		name="CPU Hotplug Settings">
+       <spinner description="Sets the CPU Hotplug Mode. Hotplug mode will dynamically switch the second core on and off. Using second core always-off or always-on modes will make the other hotplug parameters useless." name="Hotplug Mode" action="secondcore">
+             <spinnerItem name="CPU Hotplug (default)" value="hotplug"/> 
+             <spinnerItem name="Second core always-off" value="always-off"/> 
+             <spinnerItem name="Second core always-on" value="always-on"/> 
+       </spinner>
+       <seekBar description="second core will be enabled when the load goes above this threshold (default is 30)"
+                name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="0" reversed="false" step="1" max="100"/>
+       <seekBar description="second core will be disabled when the load goes below this threshold (default is 20)"
+                name="load_l1" action="generic /sys/module/stand_hotplug/parameters/load_l1" unit="%" min="0" reversed="false" step="1" max="100"/>
+       <seekBar description="(default is 2)"
+                name="min_rq" action="generic /sys/module/stand_hotplug/parameters/min_rq" unit="" min="0" reversed="false" step="1" max="2"/>
+       <seekBar description="(default is 20)"
+                name="load_rq" action="generic /sys/module/stand_hotplug/parameters/load_rq" unit="%" min="5" reversed="false" step="1" max="100"/>
+       <seekBar description="Sets hot plug sampling intervals for screen-on state (default is 100)"
+                name="rate" action="generic /sys/module/stand_hotplug/parameters/rate" unit=" jiffies" min="50" reversed="false" step="50" max="1000"/>
+       <seekBar description="Sets the frequency below which second core will not be turned on, regardless of thresholds. (default: 100000)" 
+		name="freq_min" action="generic /sys/module/stand_hotplug/parameters/freq_min" unit=" kHz" min="0" reversed="false" step="100000" max="1200000"/>
+    </settingsPane>
+
+    <settingsPane description="" 
+		name="CPU Idle and Power Settings">
+      <spinner description="Sets the CPU Idle Mode. AFTR+LPA is the default and best for the battery life but if you have problems try Idle+LPA." name="CPU Idle Mode" action="generic /sys/module/cpuidle_exynos4/parameters/enable_mask">
+             <spinnerItem name="AFTR + LPA (default)" value="3"/> 
+             <spinnerItem name="Idle + LPA" value="2"/> 
+             <spinnerItem name="AFTR only" value="1"/> 
+             <spinnerItem name="Idle only" value="0"/> 
+      </spinner>
+      <seekBar description="Sets the sched_mc value which changes the cpu scheduler behaviour for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be tried to be loaded more and setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)"
+            name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
+    </settingsPane>
+
+    <settingsPane description="" 
+		name="CPU Smooth Scaling Settings">
+      <seekBar description="smooth_target controls both smooth-scaling and cpu throttling. Default value is 2 which corresponds to 1200MHz. If the cpu gets hot the cpu is throttled to L3(1000MHz) and L4(800MHz) depending on the temperature. If you decrease this value, both smooth scaling and throttling targets will decrease."
+            name="smooth_target" action="generic /sys/devices/system/cpu/cpu0/cpufreq/smooth_target" unit="" min="0" reversed="false" step="1" max="4"/>
+      <seekBar description="if smooth_target+smooth_offset is higher than the target frequency, minimum of current_freq-smooth_step or smooth_target+smooth_offset-smooth_step. Set this to 0 to disable smooth scaling."
+            name="smooth_offset" action="generic /sys/devices/system/cpu/cpu0/cpufreq/smooth_offset" unit="" min="0" reversed="false" step="1" max="4"/>
+      <seekBar description=""
+            name="smooth_step" action="generic /sys/devices/system/cpu/cpu0/cpufreq/smooth_step" unit="" min="0" reversed="false" step="1" max="4"/>
+    </settingsPane>
+
+  </settingsTab>
+
+  <settingsTab name="GPU">
+    <settingsPane description="GPU Frequency Settings. Normally, our device has 2 frequency steps. SiyahKernel has three steps but the third step is not enabled as default. The defaults are 160,267 and 267. Voltage defaults are 950mV, 1000mV and 1000mV." name="GPUFreq">
+      <spinner description="Changes the first (lowest) GPU frequency step" name="GPU Freq Step1" action="gpu-freq 1">
+             <spinnerItem name="400MHz" value="400"/> 
+             <spinnerItem name="267MHz" value="267"/> 
+             <spinnerItem name="200MHz" value="200"/> 
+             <spinnerItem name="160MHz" value="160"/> 
+             <spinnerItem name="133MHz" value="133"/> 
+             <spinnerItem name="100MHz" value="100"/> 
+             <spinnerItem name="66MHz" value="66"/> 
+             <spinnerItem name="40MHz" value="40"/> 
+      </spinner>
+      <spinner description="Changes the second (middle) GPU frequency step" name="GPU Freq Step2" action="gpu-freq 2">
+             <spinnerItem name="400MHz" value="400"/> 
+             <spinnerItem name="267MHz" value="267"/> 
+             <spinnerItem name="200MHz" value="200"/> 
+             <spinnerItem name="160MHz" value="160"/> 
+             <spinnerItem name="133MHz" value="133"/> 
+             <spinnerItem name="100MHz" value="100"/> 
+             <spinnerItem name="66MHz" value="66"/> 
+             <spinnerItem name="40MHz" value="40"/> 
+      </spinner>
+      <spinner description="Changes the third (last) GPU frequency step" name="GPU Freq Step3" action="gpu-freq 3">
+             <spinnerItem name="400MHz" value="400"/> 
+             <spinnerItem name="267MHz" value="267"/> 
+             <spinnerItem name="200MHz" value="200"/> 
+             <spinnerItem name="160MHz" value="160"/> 
+             <spinnerItem name="133MHz" value="133"/> 
+             <spinnerItem name="100MHz" value="100"/> 
+             <spinnerItem name="66MHz" value="66"/> 
+             <spinnerItem name="40MHz" value="40"/> 
+      </spinner>
+    </settingsPane>
+
+    <settingsPane description="GPU Voltage Levels: The defaults are 950,1050 and 1050." name="GPU Voltage Levels">
+      <seekBar description="GPU Voltage for the first (lowest) step" 
+		name="GPU Voltage Level1" action="gpu-voltage 1" unit="mV" min="800" reversed="false" step="50" max="1200"/>
+      <seekBar description="GPU Voltage for the second (middle) step" 
+		name="GPU Voltage Level2" action="gpu-voltage 2" unit="mV" min="800" reversed="false" step="50" max="1200"/>
+      <seekBar description="GPU Voltage for the third (highest) step" 
+		name="GPU Voltage Level3" action="gpu-voltage 3" unit="mV" min="800" reversed="false" step="50" max="1200"/>
+    </settingsPane>
+
+    <settingsPane description="GPU load thresholds to change between frequency steps. The third step is disabled as default by having the second to third threshold 100." name="GPU Thresholds">
+      <seekBar description="GPU threshold to jump up from first to second step" 
+		name="GPU Threshold 1-UP" action="gpu-thresh 1UP" unit="%" min="0" reversed="false" step="5" max="100"/>
+      <seekBar description="GPU threshold to jump down from second to first step" 
+		name="GPU Threshold 2-DOWN" action="gpu-thresh 2DOWN" unit="%" min="0" reversed="false" step="5" max="100"/>
+      <seekBar description="GPU threshold to jump up from second to third step" 
+		name="GPU Threshold 2-UP" action="gpu-thresh 2UP" unit="%" min="0" reversed="false" step="5" max="100"/>
+      <seekBar description="GPU threshold to jump down from third to second step" 
+		name="GPU Threshold 3-DOWN" action="gpu-thresh 3DOWN" unit="%" min="0" reversed="false" step="5" max="100"/>
+    </settingsPane>
+
+    <settingsPane description="The number of cycles that the GPU stays at the specific level. The defaults are 1,1 and 1." name="GPU StayCount">
+      <seekBar description="GPU first (for the lowest freq) StayCount" 
+		name="GPU StayCount1" action="gpu-staycount 1" unit=" sec" min="0" reversed="false" step="1" max="5"/>
+      <seekBar description="GPU second (for the middle freq) StayCount" 
+		name="GPU StayCount2" action="gpu-staycount 2" unit=" sec" min="0" reversed="false" step="1" max="5"/>
+      <seekBar description="GPU third (for the highest freq) StayCount" 
+		name="GPU StayCount3" action="gpu-staycount 3" unit=" sec" min="0" reversed="false" step="1" max="5"/>
+    </settingsPane>
+
+  </settingsTab>
+
+  <settingsTab name="Screen">
+    <settingsPane description="Some TouchScreen/Display Settings" name="Screen Settings">
+       <seekBar description="Sets touchscreen move sensitivity (vitalij value)." 
+		name="TouchMove Sensitivity" action="generic /sys/devices/platform/s3c2440-i2c.3/i2c-3/3-004a/mov_hysti" unit=" pixel" min="0" reversed="false" step="1" max="20"/>
+       <seekBar description="Setting min_bl higher will result in staying lowest brightness level for brighter conditions" 
+		name="min_bl (default 40)" action="generic /sys/class/misc/brightness_curve/min_bl" unit="" min="0" reversed="false" step="10" max="150"/>
+       <seekBar description="Minimum brightness level" 
+		name="min_gamma (default 0)" action="generic /sys/class/misc/brightness_curve/min_gamma" unit="" min="0" reversed="false" step="1" max="20"/>
+       <seekBar description="Maximum brightness level" 
+		name="max_gamma (default 20)" action="generic /sys/class/misc/brightness_curve/max_gamma" unit="" min="0" reversed="false" step="1" max="20"/>
+    </settingsPane>
+  </settingsTab>
+
+  <settingsTab name="Misc">
+    <settingsPane description="Misc Settings" name="Misc Settings">
+      <button description="Back up the efs partition" name="BackupEFS" action="efs-backup" label="Backup EFS"/>
+      <checkbox description="Enable or Disable Android Logger (needs restart)" name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
+      <spinner description="This will set the suspend frequency used in ondemand governor to have ondemandX behaviour. This will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps and only effective while ondemand governor is in use." name="Default Ondemand Suspend Freq." action="generic /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq">
+             <spinnerItem name="1200MHz" value="1200000"/> 
+             <spinnerItem name="1000MHz" value="1000000"/> 
+             <spinnerItem name="800MHz" value="800000"/> 
+             <spinnerItem name="500MHz" value="500000"/> 
+             <spinnerItem name="200MHz" value="200000"/> 
+             <spinnerItem name="100MHz" value="100000"/> 
+      </spinner>
+      <spinner description="This will set the default CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps." name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
+             <spinnerItem name="ondemand" value="ondemand"/> 
+             <spinnerItem name="conservative" value="conservative"/> 
+             <spinnerItem name="lulzactive" value="lulzactive"/> 
+             <spinnerItem name="smartassV2" value="smartassV2"/> 
+             <spinnerItem name="interactive" value="interactive"/> 
+      </spinner>
+      <spinner description="This will set the default I/O scheduler. Default I/O scheduler will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps." name="Default I/O Scheduler" action="generic /sys/block/mmcblk0/queue/scheduler">
+             <spinnerItem name="sio" value="sio"/> 
+             <spinnerItem name="noop" value="noop"/> 
+             <spinnerItem name="deadline" value="deadline"/> 
+             <spinnerItem name="vr" value="vr"/> 
+             <spinnerItem name="cfq" value="cfq"/> 
+      </spinner>
+      <spinner description="Charge current setting" name="Charge Current" action="chargecurrent">
+             <spinnerItem name="AC:650mA, Misc,USB:450mA (Stock)" value="1"/> 
+             <spinnerItem name="AC,Misc:650mA, USB:450mA" value="2"/> 
+             <spinnerItem name="All:650mA (risky for USB ports)" value="3"/> 
+      </spinner>
+      <button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for those period, then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
+    </settingsPane>
+    <settingsPane description="Removing/Reinstalling root to support some apps which requires you not to have a rooted phone." name="Remove/Reinstall Root">
+      <button description="Removes su and Superuser.apk files from the system partition" name="Remove Root" action="remove-root" label="Remove Root"/>
+      <button description="Tries to reinstall root. If this fails, please check auto-install root checkbox and reboot." name="Install  Root" action="install-root" label="Install Root"/>
+      <checkbox description="If checked, installs root on the next reboot." name="Auto-Install Root" action="generic /tmp/install_root" label="Auto-Install Root"/>
+    </settingsPane>
+  </settingsTab>
+
+</settingsRoot>

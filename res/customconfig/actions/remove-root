@@ -1,0 +1,22 @@
+#!/sbin/busybox sh
+
+if [ -f /system/xbin/su ];then
+  mount -o remount,rw /dev/block/mmcblk0p9 /system > /dev/null 2>&1
+  rm -f /system/bin/su > /dev/null 2>&1
+  rm -f /system/xbin/su > /dev/null 2>&1
+  # some roms have a busybox with su applet
+  rm -f /system/xbin/busybox > /dev/null 2>&1
+  ln -s /sbin/busybox /system/xbin/busybox > /dev/null 2>&1
+  # I need to remove this as well for Garanti CepBank app
+  rm -f /system/xbin/which > /dev/null 2>&1
+  # 1SuperUser, superuser Superuser SuperUser whatever...
+  rm -rf /data/dalvik-cache/*uper?ser.apk* > /dev/null 2>&1
+  rm -f /system/app/*uper?ser.apk > /dev/null 2>&1
+  rm -f /data/app/*uper?ser.apk > /dev/null 2>&1
+  mount -o remount,ro /dev/block/mmcblk0p9 /system > /dev/null 2>&1
+  # run reinstall-helper
+  /sbin/busybox sh /sbin/ext/su-helper.sh
+  echo Root removed. The apps which require root, including this app, will have limited functionality.
+else
+  echo You do not have root.
+fi

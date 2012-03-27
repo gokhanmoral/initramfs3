@@ -1,0 +1,25 @@
+#!/sbin/busybox sh
+
+if [ "a$2" != "a" ];then
+  secondcore=$2
+fi
+
+case "${secondcore}" in
+  hotplug)
+    echo "on" > /sys/devices/virtual/misc/second_core/hotplug_on
+    echo "off" > /sys/devices/virtual/misc/second_core/second_core_on
+    ;;
+  always-on)
+    echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on
+    echo "on" > /sys/devices/virtual/misc/second_core/second_core_on
+    ;;
+  always-off)
+    echo "off" > /sys/devices/virtual/misc/second_core/hotplug_on
+    echo "off" > /sys/devices/virtual/misc/second_core/second_core_on
+    ;;
+  *)
+    secondcore=hotplug
+    ;;
+esac;
+
+echo $secondcore

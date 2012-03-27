@@ -1,0 +1,16 @@
+#!/sbin/busybox sh
+
+if [ "a$3" == "a" ];then
+  evalcmd='eval "echo \$GPUTHRESHOLD$2"'
+  eval $evalcmd
+else
+  evalcmd='eval "GPUTHRESHOLD$2=$3"'
+  eval $evalcmd
+  evalcmd='eval "echo \$GPUTHRESHOLD$2"'
+  eval $evalcmd
+fi
+
+if [ -f /sys/class/misc/gpu_clock_control/gpu_control ];then
+echo "${GPUTHRESHOLD1UP}% ${GPUTHRESHOLD2DOWN}% ${GPUTHRESHOLD2UP}% ${GPUTHRESHOLD3DOWN}%" > /sys/class/misc/gpu_clock_control/gpu_control
+fi
+

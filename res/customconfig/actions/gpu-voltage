@@ -1,0 +1,16 @@
+#!/sbin/busybox sh
+
+if [ "a$3" == "a" ];then
+  evalcmd='eval "echo \$GPUVOLT$2"'
+  eval $evalcmd
+else
+  evalcmd='eval "GPUVOLT$2=$3"'
+  eval $evalcmd
+  evalcmd='eval "echo \$GPUVOLT$2"'
+  eval $evalcmd
+fi
+
+if [ -f /sys/class/misc/gpu_voltage_control/gpu_control ];then
+echo "${GPUVOLT1}000 ${GPUVOLT2}000 ${GPUVOLT3}000" > /sys/class/misc/gpu_voltage_control/gpu_control
+fi
+

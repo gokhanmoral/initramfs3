@@ -1,0 +1,9 @@
+#!/sbin/busybox sh
+
+if [ ! -f /system/xbin/su ];then
+  touch /data/.siyah/install-root
+  echo Please wait 10 seconds and check if you have root root. If you do not have it restart your phone.
+else
+  echo You already have root
+fi
+

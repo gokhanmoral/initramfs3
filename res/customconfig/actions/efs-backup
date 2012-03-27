@@ -1,0 +1,12 @@
+#!/sbin/busybox sh
+
+if [ ! -f /mnt/sdcard/efsbackup.tar.gz ];
+then
+  /sbin/busybox tar zcvf /sdcard/efsbackup.tar.gz /efs
+  /sbin/busybox cat /dev/block/mmcblk0p1 > /sdcard/efsdev-mmcblk0p1.img
+  /sbin/busybox gzip /sdcard/efsdev-mmcblk0p1.img
+  echo "efs backup is created in your internal sdcard"
+else
+  echo "You already have an efs backup in your sdcard. Please delete it before creating another one."
+fi
+

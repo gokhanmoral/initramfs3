@@ -1,0 +1,72 @@
+#!/sbin/busybox sh
+cd /
+mkdir /dev/block
+mknod /dev/block/mmcblk0p9 b 259 1
+/sbin/busybox mount -t ext4 /dev/block/mmcblk0p9 /system
+
+if [ -f /system/framework/kafdex.jar ];
+then
+touch /system/framework/kafdex.jar
+fi;
+
+busybox mount -t proc proc /proc
+busybox mount -t sysfs sysfs /sys
+echo 0 > /proc/sys/kernel/rom_feature_set
+
+if [ -f /system/recovery.cpio.gz ];
+then
+mount -o remount,rw /
+zcat /system/recovery.cpio.gz | cpio -idmu
+fi;
+
+if [ "`/sbin/busybox grep Slim /system/build.prop`" ];
+then
+echo 3 > /proc/sys/kernel/rom_feature_set
+/sbin/busybox umount /system
+exec /sbin/init.cm
+fi;
+
+if [ "`/sbin/busybox grep -i aosp /system/build.prop`" ];
+then
+echo 3 > /proc/sys/kernel/rom_feature_set
+/sbin/busybox umount /system
+exec /sbin/init.cm
+fi;
+
+if [ "`/sbin/busybox grep -i =aokp /system/build.prop`" ];
+then
+echo 3 > /proc/sys/kernel/rom_feature_set
+/sbin/busybox umount /system
+exec /sbin/init.cm
+fi;
+
+if [ "`/sbin/busybox grep -i CyanogenMod /system/build.prop`" ];
+then
+echo 3 > /proc/sys/kernel/rom_feature_set
+/sbin/busybox umount /system
+exec /sbin/init.cm
+fi;
+
+if [ "`/sbin/busybox grep -i MIUI /system/build.prop`" ];
+then
+echo 1 > /proc/sys/kernel/rom_feature_set
+/sbin/busybox umount /system
+exec /sbin/init.cm
+fi;
+
+if [ "`/sbin/busybox grep -i insanity /system/build.prop`" ];
+then
+echo 3 > /proc/sys/kernel/rom_feature_set
+/sbin/busybox umount /system
+exec /sbin/init.cm
+fi;
+
+if [ "`/sbin/busybox grep -i Oxygen /system/build.prop`" ];
+then
+echo 1 > /proc/sys/kernel/rom_feature_set
+/sbin/busybox umount /system
+exec /sbin/init.cm
+fi;
+
+busybox umount /system
+exec /sbin/init.samsung

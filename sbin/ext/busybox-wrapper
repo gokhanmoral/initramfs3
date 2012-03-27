@@ -1,0 +1,15 @@
+#!/sbin/ext/busybox sh
+
+if /sbin/ext/busybox [ "$0" = "sh" ]; then
+  /sbin/ext/busybox sh "$@";
+elif /sbin/ext/busybox [ "$1" = "sh" ]; then
+  /sbin/ext/busybox "$@";
+else
+  if /sbin/ext/busybox [ -x /system/bin/busybox ]; then
+    /system/bin/busybox $0 "$@";
+  elif /sbin/ext/busybox [ -x /system/xbin/busybox ]; then
+    /system/xbin/busybox $0 "$@";
+  else
+    /sbin/ext/busybox $0 "$@";
+  fi;
+fi;

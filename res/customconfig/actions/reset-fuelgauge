@@ -1,0 +1,10 @@
+#!/sbin/busybox sh
+
+if [ ! -f /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc ];
+then
+  echo "The device file is not found. Fuel gauge chip cannot be reset."
+else
+  echo "1" > /sys/devices/platform/i2c-gpio.9/i2c-9/9-0036/power_supply/fuelgauge/fg_reset_soc
+  echo "The fuel gauge chip is reset."
+fi
+

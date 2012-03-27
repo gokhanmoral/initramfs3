@@ -1,0 +1,26 @@
+#!/sbin/busybox sh
+
+if [ "a$2" == "a" ];then
+  echo $chargecurrent
+else
+  chargecurrent=$2
+  echo $chargecurrent
+fi
+
+if [ -f /sys/devices/virtual/misc/charge_current/charge_current ];then
+case "${chargecurrent}" in
+  1)
+    echo "650 450 450" > /sys/devices/virtual/misc/charge_current/charge_current
+    ;;
+  2)
+    echo "650 650 450" > /sys/devices/virtual/misc/charge_current/charge_current
+    ;;
+  3)
+    echo "650 650 650" > /sys/devices/virtual/misc/charge_current/charge_current
+    ;;
+  *)
+    chargecurrent=1
+    ;;
+esac;
+fi
+

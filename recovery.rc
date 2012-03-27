@@ -1,0 +1,67 @@
+on early-init
+    start ueventd
+
+on init
+    export PATH /sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
+    export ANDROID_ROOT /system
+    export ANDROID_DATA /data
+    export EXTERNAL_STORAGE /sdcard
+
+    #symlink /system/etc /etc
+
+    mkdir /sdcard
+    mkdir /sdcard1
+    mkdir /system
+    mkdir /data
+    mkdir /cache
+    mkdir /preload
+    mount /tmp /tmp tmpfs
+
+on fs
+    mount ext4 /dev/block/mmcblk0p9 /system noatime wait
+
+    mkdir /efs
+    mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
+
+    # check encryption status, checking UMS & data should be excuted after this command 
+    exec check_encryption_status /dev/block/mmcblk0p10
+    
+    # verfiy filesystem (UMS)
+	  exec sformat /dev/block/mmcblk0p11 vfat
+
+on boot
+
+    ifup lo
+    hostname localhost
+    domainname localdomain
+
+    class_start default
+
+service ueventd /sbin/ueventd
+    critical
+
+service recovery /sbin/recovery-loader
+
+service adbd /sbin/adbd
+    enabled
+
+# Always start adbd on userdebug and eng builds
+on property:ro.debuggable=1
+    setprop adb.recovery 1
+
+on property:adb.recovery=1
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 04e8
+    write /sys/class/android_usb/android0/idProduct 6860
+    write /sys/class/android_usb/android0/functions adb
+    write /sys/class/android_usb/android0/enable 1
+    write /sys/class/android_usb/android0/iManufacturer $ro.product.manufacturer
+    write /sys/class/android_usb/android0/iProduct $ro.product.model
+    write /sys/class/android_usb/android0/iSerial $ro.serialno
+    start adbd
+
+# Restart adbd so it can run as root
+on property:service.adb.root=1
+    write /sys/class/android_usb/android0/enable 0
+    restart adbd
+    write /sys/class/android_usb/android0/enable 1

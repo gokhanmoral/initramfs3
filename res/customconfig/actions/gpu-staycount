@@ -1,0 +1,19 @@
+#!/sbin/busybox sh
+
+if [ "a$3" == "a" ];then
+  # echo only
+  evalcmd='eval "echo \$GPUSTAYCOUNT$2"'
+  eval $evalcmd
+else
+  # set the value
+  evalcmd='eval "GPUSTAYCOUNT$2=$3"'
+  eval $evalcmd
+  # echo back
+  evalcmd='eval "echo \$GPUSTAYCOUNT$2"'
+  eval $evalcmd
+fi
+
+# we need to set all three of them
+if [ -f /sys/class/misc/gpu_clock_control/gpu_staycount ];then
+echo "$GPUSTAYCOUNT1 $GPUSTAYCOUNT2 $GPUSTAYCOUNT3" > /sys/class/misc/gpu_clock_control/gpu_staycount
+fi
