@@ -65,10 +65,10 @@ then
 fi
 
 echo "liblights..."
-#romtype=`cat /proc/sys/kernel/rom_feature_set`
+romtype=`cat /proc/sys/kernel/rom_feature_set`
 # only for non-cm7 roms
-if [ "${romtype}a" == "0a" ];
-then
+#if [ "${romtype}a" == "0a" ];
+#then
 #if [ ! -f /system/.siyah/liblights-installed ];then
   lightsmd5sum=`/sbin/busybox md5sum /system/lib/hw/lights.exynos4.so | /sbin/busybox awk '{print $1}'`
   blnlightsmd5sum=`/sbin/busybox md5sum /res/misc/lights.exynos4.so | /sbin/busybox awk '{print $1}'`
@@ -82,7 +82,7 @@ then
   fi
   echo 1 > /system/.siyah/liblights-installed
 #fi
-fi
+#fi
 
 #echo "ntfs-3g..."
 #if [ ! -s /system/xbin/ntfs-3g ];
