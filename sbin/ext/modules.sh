@@ -2,6 +2,10 @@
 
 mkdir /data/.siyah
 chmod 777 /data/.siyah
+[ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah
+[ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah
+[ ! -f /data/.siyah/performance.profile ] && cp /res/customconfig/performance.profile /data/.siyah
+
 
 . /res/customconfig/customconfig-helper
 read_defaults

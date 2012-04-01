@@ -137,6 +137,7 @@
       </spinner>
       <spinner description="This will set the default CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps." name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
              <spinnerItem name="ondemand" value="ondemand"/> 
+             <spinnerItem name="pegasusq" value="pegasusq"/> 
              <spinnerItem name="conservative" value="conservative"/> 
              <spinnerItem name="lulzactive" value="lulzactive"/> 
              <spinnerItem name="smartassV2" value="smartassV2"/> 
