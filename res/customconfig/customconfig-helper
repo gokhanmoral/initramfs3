@@ -42,12 +42,12 @@ select_profile()
     cat $ACTIVE_PROFILE
   else
     # if there is no such profile, create one
-    _ACTIVE_PROFILE=`cat $ACTIVE_PROFILE`
-    if [ ! -f ${PROFILE_PATH}/$_ACTIVE_PROFILE ];then
+    _ACTIVE_PROFILE=`cat $ACTIVE_PROFILE`.profile
+    if [ ! -f ${PROFILE_PATH}/${_ACTIVE_PROFILE} ];then
       cp $DEFAULT_PROFILE ${PROFILE_PATH}/${1}.profile
     fi
     if [ ! -f ${PROFILE_PATH}/${1}.profile ];then
-      cp $_ACTIVE_PROFILE ${PROFILE_PATH}/${1}.profile
+      cp ${PROFILE_PATH}/${_ACTIVE_PROFILE} ${PROFILE_PATH}/${1}.profile
     fi
     echo $1 > $ACTIVE_PROFILE
   fi

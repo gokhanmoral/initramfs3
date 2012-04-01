@@ -17,12 +17,15 @@ read_config
 case "${1}" in
   rename)
     rename_profile "$2" "$3"
+    exit 0
     ;;
   delete)
     delete_profile "$2"
+    exit 0
     ;;
   select)
     select_profile "$2"
+    exit 0
     ;;
   config)
     print_config
