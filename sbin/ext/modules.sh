@@ -32,6 +32,3 @@ fi
 insmod /lib/modules/Si4709_driver.ko
 # for ntfs automounting
 insmod /lib/modules/fuse.ko
-# for HID
-insmod /lib/modules/g_hid.ko
-

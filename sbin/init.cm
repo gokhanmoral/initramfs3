@@ -20,11 +20,9 @@ rm /init
 mv /innt /init
 if busybox grep -q bootmode=2 /proc/cmdline ; then
 	# recovery boot
-	busybox insmod /lib/modules/g_android.ko
 	cd /
 	exec /init
 fi
-busybox insmod /lib/modules/g_android_aosp.ko
 busybox cp -a /res/misc/cyano/* /
 
 #busybox dd bs=512 if=${BOOT_IMAGE} skip=$load_offset count=$load_len | busybox zcat | busybox cpio -i
