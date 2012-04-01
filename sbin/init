@@ -11,7 +11,6 @@ fi;
 
 busybox mount -t proc proc /proc
 busybox mount -t sysfs sysfs /sys
-echo 0 > /proc/sys/kernel/rom_feature_set
 
 if [ -f /system/recovery.cpio.gz ];
 then
@@ -68,5 +67,6 @@ echo 1 > /proc/sys/kernel/rom_feature_set
 exec /sbin/init.cm
 fi;
 
+echo 0 > /proc/sys/kernel/rom_feature_set
 busybox umount /system
 exec /sbin/init.samsung
