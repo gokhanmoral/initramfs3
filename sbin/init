@@ -46,7 +46,14 @@ echo 3 > /proc/sys/kernel/rom_feature_set
 exec /sbin/init.cm
 fi;
 
-if [ "`/sbin/busybox grep -i MIUI /system/build.prop`" ];
+if [ "`/sbin/busybox grep -i AdyScorpius /system/build.prop`" ];
+then
+echo 1 > /proc/sys/kernel/rom_feature_set
+/sbin/busybox umount /system
+exec /sbin/init.cm
+fi;
+
+if [ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ];
 then
 echo 1 > /proc/sys/kernel/rom_feature_set
 /sbin/busybox umount /system
@@ -67,6 +74,11 @@ echo 1 > /proc/sys/kernel/rom_feature_set
 exec /sbin/init.cm
 fi;
 
+if [ "`/sbin/busybox grep -i =MIUI /system/build.prop`" ];
+then
+mv /init.miui /init.rc
+fi
+rm -f /init.miui
 echo 0 > /proc/sys/kernel/rom_feature_set
 busybox umount /system
 exec /sbin/init.samsung
