@@ -31,6 +31,7 @@ MIUI=0
 [ "`/sbin/busybox grep -i insanity /system/build.prop`" ] && AOSP=1
 [ "`/sbin/busybox grep -i Oxygen /system/build.prop`" ] && AOSP=1
 [ "`/sbin/busybox grep -i =MIUI /system/build.prop`" ] && MIUI=1
+[ -f /system/framework/framekwork-miui-res.apk ] && MIUI=1
 
 if [ "$AOSP" == 1 ];
 then
