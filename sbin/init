@@ -21,7 +21,7 @@ fi;
 AOSP=0
 MIUI=0
 
-[ -f /system/framework/framekwork2.jar ] || AOSP=1
+[ -f /system/framework/framework2.jar ] || AOSP=1
 [ "`/sbin/busybox grep Slim /system/build.prop`" ] && AOSP=1
 [ "`/sbin/busybox grep -i aosp /system/build.prop`" ] && AOSP=1
 [ "`/sbin/busybox grep -i hydrog /system/build.prop`" ] && AOSP=1
