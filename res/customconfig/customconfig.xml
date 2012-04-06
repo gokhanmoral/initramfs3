@@ -1,5 +1,9 @@
 <settingsRoot>
   <settingsTab name="CPU">
+    <settingsPane description="These settings control CFS (Complete Fair Scheduler) Task Scheduler Settings" name="CFS Settings">
+      <checkbox description="Disabling GENTLE_FAIR_SLEEPERS may give you better UI responsiveness." name="GENTLE_FAIR_SLEEPERS" action="schedfeat GENTLE_FAIR_SLEEPERS" label="GENTLE_FAIR_SLEEPERS"/>
+      <checkbox description="Using ARCH_POWER enables the use of arm topology power functions instead of generic ones." name="ARCH_POWER" action="schedfeat ARCH_POWER" label="ARCH_POWER"/>
+    </settingsPane>
     <settingsPane description="The following settings control CPU hotplug parameters. Depending on the following parameters, the second core is enabled or disabled." 
 		name="CPU Hotplug Settings">
        <spinner description="Sets the CPU Hotplug Mode. Hotplug mode will dynamically switch the second core on and off. Using second core always-off or always-on modes will make the other hotplug parameters useless." name="Hotplug Mode" action="secondcore">
@@ -39,7 +43,7 @@
             name="smooth_target" action="generic /sys/devices/system/cpu/cpu0/cpufreq/smooth_target" unit="" min="0" reversed="false" step="1" max="4"/>
       <seekBar description="if smooth_target+smooth_offset is higher than the target frequency, minimum of current_freq-smooth_step or smooth_target+smooth_offset-smooth_step. Set this to 0 to disable smooth scaling."
             name="smooth_offset" action="generic /sys/devices/system/cpu/cpu0/cpufreq/smooth_offset" unit="" min="0" reversed="false" step="1" max="4"/>
-      <seekBar description=""
+      <seekBar description="step size for smooth_stepping"
             name="smooth_step" action="generic /sys/devices/system/cpu/cpu0/cpufreq/smooth_step" unit="" min="0" reversed="false" step="1" max="4"/>
     </settingsPane>
 

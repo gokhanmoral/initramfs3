@@ -37,8 +37,3 @@ fi
 
 #thanks to pikachu01@XDA
 /sbin/busybox sh /sbin/siyah/thunderbolt.sh
-#sysctl -w kernel.sched_min_granularity_ns=200000;
-#sysctl -w kernel.sched_latency_ns=400000;
-#sysctl -w kernel.sched_wakeup_granularity_ns=100000;
-#echo NO_GENTLE_FAIR_SLEEPERS > /sys/kernel/debug/sched_features
-echo ARCH_POWER > /sys/kernel/debug/sched_features
