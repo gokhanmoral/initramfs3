@@ -12,14 +12,6 @@ sleep 5
 /res/uci.sh apply
 ) &
 
-# IPv6 privacy tweak
-echo "2" > /proc/sys/net/ipv6/conf/all/use_tempaddr
-
-# TCP tweaks
-#echo "2" > /proc/sys/net/ipv4/tcp_syn_retries
-#echo "2" > /proc/sys/net/ipv4/tcp_synack_retries
-#echo "10" > /proc/sys/net/ipv4/tcp_fin_timeout
-
 # disable debugging on some modules
 if [ "$logger" == "off" ];then
   echo 0 > /sys/module/ump/parameters/ump_debug_level
@@ -34,6 +26,3 @@ if [ "$logger" == "off" ];then
   echo 0 > /sys/module/binder/parameters/debug_mask
   echo 0 > /sys/module/xt_qtaguid/parameters/debug_mask
 fi
-
-#thanks to pikachu01@XDA
-/sbin/busybox sh /sbin/siyah/thunderbolt.sh

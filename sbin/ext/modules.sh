@@ -11,20 +11,9 @@ chmod 777 /data/.siyah
 read_defaults
 read_config
 
-/sbin/busybox mount rootfs / -o remount,rw
-
-#### proper module support ####
-#siyahver=`uname -r`
-#mkdir /lib/modules/$siyahver
-#for i in `ls -1 /lib/modules/*.ko`;do
-#  basei=`basename $i`
-#  ln /lib/modules/$basei /lib/modules/$siyahver/$basei
-#done;
-#depmod /lib/modules/$siyahver
-
-/sbin/busybox mount rootfs / -o remount,ro
-
-#android logger
+if [ "$logger" == "off" ];then
+rm -rf /dev/log
+fi
 if [ "$logger" == "on" ];then
 insmod /lib/modules/logger.ko
 fi
