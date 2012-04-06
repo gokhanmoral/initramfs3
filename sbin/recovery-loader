@@ -1,6 +1,7 @@
 #!/sbin/ext/busybox sh
 
 /sbin/ext/busybox mount -t rootfs -o remount,rw rootfs
+/sbin/ext/busybox insmod /lib/modules/logger.ko
 /sbin/ext/busybox ln -s /sbin/recovery /sbin/busybox
 
 /sbin/ext/busybox ln -s /sbin/busybox /sbin/sh
@@ -17,7 +18,7 @@
 /sbin/ext/busybox mkdir /etc
 /sbin/ext/busybox cat /res/etc/recovery.fstab > /etc/recovery.fstab
 
-start adbd
+#start adbd
 stop tvout
 
 /sbin/ext/busybox rm /cache
