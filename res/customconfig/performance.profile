@@ -33,3 +33,5 @@ freq_min=300000
 install_root=on
 mov_hysti=5
 suspend_freq=500000
+GENTLE_FAIR_SLEEPERS=off
+ARCH_POWER=on
