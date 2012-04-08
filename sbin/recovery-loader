@@ -2,11 +2,6 @@
 
 /sbin/ext/busybox mount -t rootfs -o remount,rw rootfs
 /sbin/ext/busybox insmod /lib/modules/logger.ko
-/sbin/ext/busybox insmod /lib/modules/logger.ko
-/sbin/ext/busybox insmod /lib/modules/logger.ko
-/sbin/ext/busybox insmod /lib/modules/j4fs.ko
-/sbin/ext/busybox insmod /lib/modules/j4fs.ko
-/sbin/ext/busybox insmod /lib/modules/j4fs.ko
 /sbin/ext/busybox ln -s /sbin/recovery /sbin/busybox
 
 /sbin/ext/busybox ln -s /sbin/busybox /sbin/sh
