@@ -18,12 +18,10 @@ busybox mount -t sysfs sysfs /sys
 
 rm /init
 mv /innt /init
-if busybox grep -q bootmode=2 /proc/cmdline ; then
-	# recovery boot
-	cd /
-	exec /init
-fi
 busybox cp -a /res/misc/cyano/* /
+if grep -q bootmode=2 /proc/cmdline ; then
+  mv /recovery.rc /init.rc
+fi
 
 #busybox dd bs=512 if=${BOOT_IMAGE} skip=$load_offset count=$load_len | busybox zcat | busybox cpio -i
 

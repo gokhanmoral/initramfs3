@@ -1,5 +1,7 @@
 #!/sbin/busybox sh
-
+if grep -q bootmode=2 /proc/cmdline ; then
+  mv /recovery.rc /init.rc
+fi
 rm /init
 mv /innt /init
 cd /
