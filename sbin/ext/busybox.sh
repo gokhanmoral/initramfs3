@@ -2,7 +2,7 @@
 # magic busybox
 
 # mount system and rootfs r/w
-mount -o rw,remount /dev/block/mmcblk0p9 /system
+mount -o rw,remount /system
 mount -t rootfs -o remount,rw rootfs
 
 # make sure we have /system/xbin

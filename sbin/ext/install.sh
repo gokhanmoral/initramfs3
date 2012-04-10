@@ -14,8 +14,8 @@ extract_payload()
 read_defaults
 read_config
 
-mount -o remount,rw /dev/block/mmcblk0p9 /system
-/sbin/busybox mount rootfs / -o remount,rw
+mount -o remount,rw /system
+/sbin/busybox mount -t rootfs -o remount,rw rootfs
 payload_extracted=0
 
 cd /
@@ -97,5 +97,5 @@ fi
 
 #rm -rf /res/misc/payload
 
-/sbin/busybox mount rootfs / -o remount,ro
-mount -o remount,ro /dev/block/mmcblk0p9 /system
+/sbin/busybox mount -t rootfs -o remount,ro rootfs
+mount -o remount,ro /system

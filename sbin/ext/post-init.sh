@@ -19,7 +19,7 @@
 ##### Early-init phase tweaks #####
 /sbin/busybox sh /sbin/ext/tweaks.sh
 
-/sbin/busybox mount rootfs / -o remount,ro
+/sbin/busybox mount -t rootfs -o remount,ro rootfs
 
 ##### EFS Backup #####
 (
