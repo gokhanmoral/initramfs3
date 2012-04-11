@@ -1,12 +1,4 @@
 #!/sbin/busybox sh
-if grep -q bootmode=2 /proc/cmdline ; then
-  mv /recovery.rc /init.rc
-fi
-if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
-  # low power mode
-  busybox cp lpm.rc init.rc
-  busybox rm init.smdk4210.rc
-fi
 
 rm /init
 mv /innt /init

@@ -11,3 +11,4 @@
 
 #internal
 /emmc		vfat		/dev/block/mmcblk0p11
+/preload	ext4		/dev/block/mmcblk0p12

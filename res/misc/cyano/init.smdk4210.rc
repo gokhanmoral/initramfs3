@@ -31,10 +31,17 @@ on early-init
 
 on fs
 # mount ext4 partitions
-    mount ext4 /dev/block/mmcblk0p9 /system noatime wait ro
-    mount ext4 /dev/block/mmcblk0p7 /cache nosuid nodev noatime wait
-    mount ext4 /dev/block/mmcblk0p10 /data nosuid nodev noatime wait noauto_da_alloc
-    mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
+    # verfiy filesystem (UMS)
+    exec sformat /dev/block/mmcblk0p11 vfat
+    # make sure sdcard is mounted because we may have our data and cache partitions on it
+    mount vfat /dev/block/mmcblk0p11 /sdcard wait
+    mount ext4 /res/dev/system /system noatime wait ro
+
+    exec sfsck /res/dev/cache ext4
+    mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait
+
+    exec sfsck /res/dev/data ext4
+    mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
     
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
     mkdir /efs/bluetooth
@@ -51,11 +58,7 @@ on fs
 on post-fs-data
 # insmod kernel modules
     insmod /lib/modules/Si4709_driver.ko
-    insmod /lib/modules/j4fs.ko
     
-# mount param.lfs
-    mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs
-
 # GPS
     chown root system /dev/ttySAC1
     chmod 0660 /dev/ttySAC1

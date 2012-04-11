@@ -2,37 +2,15 @@
 export _PATH="$PATH"
 export PATH=/sbin
 
-#BOOT_IMAGE=/dev/block/mmcblk0p5
-
 busybox cd /
 busybox date >>boot.txt
 exec >>boot.txt 2>&1
 busybox rm init
-busybox mount -t proc proc /proc
-busybox mount -t sysfs sysfs /sys
-
-#eval $(read_boot_headers ${BOOT_IMAGE})
-
-#load_offset=$boot_offset
-#load_len=$boot_len
 
 rm /init
 mv /innt /init
 busybox cp -a /res/misc/cyano/* /
-if grep -q bootmode=2 /proc/cmdline ; then
-  mv /recovery.rc /init.rc
-fi
 
-#busybox dd bs=512 if=${BOOT_IMAGE} skip=$load_offset count=$load_len | busybox zcat | busybox cpio -i
-
-if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
-	# low power mode
-	busybox cp lpm.rc init.rc
-	busybox rm init.smdk4210.rc
-fi
-
-busybox umount /sys
-busybox umount /proc
 busybox date >>boot.txt
 busybox rm -fr /res/misc/cyano /dev/*
 export PATH="${_PATH}"

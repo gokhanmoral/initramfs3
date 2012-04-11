@@ -1,11 +1,35 @@
 #!/sbin/busybox sh
 cd /
-mkdir /dev/block
-mknod /dev/block/mmcblk0p9 b 259 1
-/sbin/busybox mount -t ext4 /dev/block/mmcblk0p9 /system
 
 busybox mount -t proc proc /proc
 busybox mount -t sysfs sysfs /sys
+
+if grep -q bootmode=2 /proc/cmdline ; then
+  echo 0 > /proc/sys/kernel/rom_feature_set
+  mv /recovery.rc /init.rc
+  exec /sbin/init.samsung
+fi
+if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
+  # low power mode
+  echo 0 > /proc/sys/kernel/rom_feature_set
+  cp lpm.rc init.rc
+  rm init.smdk4210.rc
+  exec /sbin/init.samsung
+fi
+
+tar xvf /res/misc/dev.tar
+
+
+export SECONDROM=1
+mount -t ext4 -o ro /dev/block/mmcblk0p12 /preload
+mount -t vfat -o ro /dev/block/mmcblk0p11 /sdcard
+[ -f /preload/build.prop ] || export SECONDROM=0
+[ -f /sdcard/.secondrom/data.img ] || export SECONDROM=0
+[ -f /sdcard/.secondrom/cache.img ] || export SECONDROM=0
+
+/sbin/choose_rom $SECONDROM
+
+/sbin/busybox mount -t ext4 /res/dev/system /system
 
 if [ -f /system/recovery.cpio.gz ];
 then
@@ -39,6 +63,7 @@ fi;
 if [ "$MIUI" == 1 ];
 then
 mv /init.miui /init.rc
+mv /default.prop.miui /default.prop
 fi
 
 rm -f /init.miui
