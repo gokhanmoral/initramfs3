@@ -38,10 +38,10 @@ on fs
     mount ext4 /res/dev/system /system noatime wait ro
 
     exec sfsck /res/dev/cache ext4
-    mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait
+    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
 
     exec sfsck /res/dev/data ext4
-    mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
+    mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
     
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
     mkdir /efs/bluetooth
