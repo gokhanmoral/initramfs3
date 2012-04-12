@@ -35,3 +35,5 @@ mov_hysti=3
 suspend_freq=800000
 GENTLE_FAIR_SLEEPERS=off
 ARCH_POWER=on
+vibrator_level=6
+user_gamma_adjust=0

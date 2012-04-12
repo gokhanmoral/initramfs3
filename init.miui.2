@@ -111,7 +111,7 @@ on fs
     # verfiy filesystem (UMS)
     exec sformat /dev/block/mmcblk0p11 vfat
     # make sure sdcard is mounted because we may have our data and cache partitions on it
-    mount vfat /dev/block/mmcblk0p11 /sdcard wait utf8
+    mount vfat /dev/block/mmcblk0p11 /mnt/sdcard wait utf8
 
     exec sfsck /res/dev/cache ext4
     mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait

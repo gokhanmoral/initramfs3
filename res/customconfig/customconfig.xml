@@ -115,7 +115,7 @@
   </settingsTab>
 
   <settingsTab name="Screen">
-    <settingsPane description="Some TouchScreen/Display Settings" name="Screen Settings">
+    <settingsPane description="Brightness Curve settings which modify auto-brightness behavior." name="Brightness Curve">
        <seekBar description="Sets touchscreen move sensitivity (vitalij value)." 
 		name="TouchMove Sensitivity" action="generic /sys/devices/platform/s3c2440-i2c.3/i2c-3/3-004a/mov_hysti" unit=" pixel" min="0" reversed="false" step="1" max="20"/>
        <seekBar description="Setting min_bl higher will result in staying lowest brightness level for brighter conditions" 
@@ -124,6 +124,12 @@
 		name="min_gamma (default 0)" action="generic /sys/class/misc/brightness_curve/min_gamma" unit="" min="0" reversed="false" step="1" max="20"/>
        <seekBar description="Maximum brightness level" 
 		name="max_gamma (default 20)" action="generic /sys/class/misc/brightness_curve/max_gamma" unit="" min="0" reversed="false" step="1" max="20"/>
+    </settingsPane>
+    <settingsPane description="Other Settings" name="Other Settings">
+       <seekBar description="User adjustable gamma shift." 
+		name="Gamma Shift" action="generic /sys/devices/platform/samsung-pd.2/s3cfb.0/spi_gpio.3/spi3.0/lcd/panel/user_gamma_adjust" unit=" pixel" min="-50" reversed="false" step="1" max="50"/>
+       <seekBar description="Vibration intensity level (default 6)" 
+		name="Vibration Intensity" action="generic /sys/devices/platform/tspdrv/vibrator_level" unit=" pixel" min="0" reversed="false" step="1" max="6"/>
     </settingsPane>
   </settingsTab>
 

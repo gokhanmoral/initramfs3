@@ -108,11 +108,6 @@ on fs
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
     mount ext4 /res/dev/system /system noatime wait ro
     
-    # verfiy filesystem (UMS)
-    exec sformat /dev/block/mmcblk0p11 vfat
-    # make sure sdcard is mounted because we may have our data and cache partitions on it
-    mount vfat /dev/block/mmcblk0p11 /sdcard wait
-
     exec sfsck /res/dev/cache ext4
     mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
 
@@ -132,6 +127,9 @@ on fs
     # check encryption status, checking UMS & data should be excuted after this command 
     exec check_encryption_status /res/dev/data
     
+    # verfiy filesystem (UMS)
+    exec sformat /dev/block/mmcblk0p11 vfat
+	  
 on post-fs
     exec sfsck /res/dev/data ext4
     mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc

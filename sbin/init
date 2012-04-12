@@ -20,19 +20,18 @@ fi
 tar xvf /res/misc/dev.tar
 
 
-export SECONDROM=1
+SECONDROM=1
 mount -t ext4 -o ro /dev/block/mmcblk0p12 /preload
-mount -t vfat -o ro /dev/block/mmcblk0p11 /sdcard
-[ -f /preload/build.prop ] || export SECONDROM=0
-[ -f /sdcard/.secondrom/data.img ] || export SECONDROM=0
-[ -f /sdcard/.secondrom/cache.img ] || export SECONDROM=0
+mount -t vfat -o ro /dev/block/mmcblk0p11 /mnt/sdcard
+[ -f /preload/build.prop ] || SECONDROM=0
+[ -f /mnt/sdcard/.secondrom/data.img ] || SECONDROM=0
+[ -f /mnt/sdcard/.secondrom/cache.img ] || SECONDROM=0
 umount /preload
-umount /sdcard
+umount /mnt/sdcard
 
 /sbin/choose_rom $SECONDROM
 if [ "$?" == "1" ]; then
   mv /res/misc/cyano/init.smdk4210.rc.2 /res/misc/cyano/init.smdk4210.rc
-  mv /init.smdk4210.rc.2 /init.smdk4210.rc
   mv /init.rc.2 /init.rc
   mv /init.miui.2 /init.miui
 fi
