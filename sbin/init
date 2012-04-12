@@ -26,8 +26,17 @@ mount -t vfat -o ro /dev/block/mmcblk0p11 /sdcard
 [ -f /preload/build.prop ] || export SECONDROM=0
 [ -f /sdcard/.secondrom/data.img ] || export SECONDROM=0
 [ -f /sdcard/.secondrom/cache.img ] || export SECONDROM=0
+umount /preload
+umount /sdcard
 
 /sbin/choose_rom $SECONDROM
+if [ "$?" == "1" ]; then
+  mv /res/misc/cyano/init.smdk4210.rc.2 /res/misc/cyano/init.smdk4210.rc
+  mv /init.smdk4210.rc.2 /init.smdk4210.rc
+  mv /init.rc.2 /init.rc
+  mv /init.miui.2 /init.miui
+fi
+
 
 /sbin/busybox mount -t ext4 /res/dev/system /system
 

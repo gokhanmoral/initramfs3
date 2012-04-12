@@ -1,7 +1,7 @@
 import init.smdk4210.usb.rc
 
 on early-init
-    export EXTERNAL_STORAGE /mnt/sdcard
+    export EXTERNAL_STORAGE /mnt/emmc
     export SECONDARY_STORAGE /mnt/emmc
     mkdir /mnt 0775 system system
     mkdir /mnt/sdcard 0775 system system
@@ -30,14 +30,18 @@ on early-init
 	chmod 0777 /sys/class/hdmi_audio/hdmi_audio/hdmi_audio_set_ext
 
 on fs
-# mount ext4 partitions
+    # mount ext4 partitions
     mount ext4 /res/dev/system /system noatime wait ro
+    # verfiy filesystem (UMS)
+    exec sformat /dev/block/mmcblk0p11 vfat
+    # make sure sdcard is mounted because we may have our data and cache partitions on it
+    mount vfat /dev/block/mmcblk0p11 /sdcard wait utf8
 
     exec sfsck /res/dev/cache ext4
-    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
+    mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait
 
     exec sfsck /res/dev/data ext4
-    mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
+    mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
     
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
     mkdir /efs/bluetooth
