@@ -3,11 +3,12 @@
 extract_payload()
 {
   payload_extracted=1
-#  chmod 755 /sbin/read_boot_headers
-#  eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5)
-#  load_offset=$boot_offset
-#  load_len=$boot_len
-#  dd bs=512 if=/dev/block/mmcblk0p5 skip=$load_offset count=$load_len | busybox cpio -i
+  chmod 755 /sbin/read_boot_headers
+  eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5)
+  load_offset=$boot_offset
+  load_len=$boot_len
+  cd /
+  dd bs=512 if=/dev/block/mmcblk0p5 skip=$load_offset count=$load_len | tar x
 }
 
 . /res/customconfig/customconfig-helper
@@ -33,14 +34,14 @@ then
     rm -f /system/xbin/su
     mkdir /system/xbin
     chmod 755 /system/xbin
-    cp /res/misc/payload/su /system/xbin/su
+    xzcat /res/misc/payload/su.xz > /system/xbin/su
     chown 0.0 /system/xbin/su
     chmod 6755 /system/xbin/su
 
     rm -f /system/app/*uper?ser.apk
     rm -f /data/app/*uper?ser.apk
     rm -rf /data/dalvik-cache/*uper?ser.apk*
-    cp /res/misc/payload/Superuser.apk /system/app/Superuser.apk
+    xzcat /res/misc/payload/Superuser.apk.xz > /system/app/Superuser.apk
     chown 0.0 /system/app/Superuser.apk
     chmod 644 /system/app/Superuser.apk
   fi
@@ -56,7 +57,7 @@ then
   rm /data/dalvik-cache/*CWMManager.apk*
   rm /data/app/eu.chainfire.cfroot.cwmmanager*.apk
 
-  cp /res/misc/payload/CWMManager.apk /system/app/CWMManager.apk
+  xzcat /res/misc/payload/CWMManager.apk.xz > /system/app/CWMManager.apk
   chown 0.0 /system/app/CWMManager.apk
   chmod 644 /system/app/CWMManager.apk
   mkdir /system/.siyah
