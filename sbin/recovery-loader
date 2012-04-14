@@ -26,9 +26,9 @@ stop tvout
 /sbin/ext/busybox chmod 777 /cache
 /sbin/ext/busybox mount -t ext4 /dev/block/mmcblk0p7 /cache
 
-#cd /
-#eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5)
-#dd bs=512 if=/dev/block/mmcblk0p5 skip=$recovery_offset count=$recovery_len | busybox xzcat | busybox cpio -i
+cd /
+eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5)
+dd bs=512 if=/dev/block/mmcblk0p5 skip=$recovery_offset count=$recovery_len | xzcat | tar x
 
 if /sbin/ext/busybox [ -f /cache/recovery/command ];
 then
