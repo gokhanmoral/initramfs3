@@ -37,3 +37,4 @@ GENTLE_FAIR_SLEEPERS=off
 ARCH_POWER=on
 vibrator_level=3
 user_gamma_adjust=0
+blnww=on

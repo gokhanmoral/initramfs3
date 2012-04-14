@@ -130,6 +130,7 @@
 		name="Gamma Shift" action="generic /sys/devices/platform/samsung-pd.2/s3cfb.0/spi_gpio.3/spi3.0/lcd/panel/user_gamma_adjust" unit=" pixel" min="-50" reversed="false" step="1" max="50"/>
        <seekBar description="Vibration intensity level (default 6)" 
 		name="Vibration Intensity" action="generic /sys/devices/platform/tspdrv/vibrator_level" unit=" pixel" min="0" reversed="false" step="1" max="6"/>
+       <checkbox description="Check this to activate BLN without wakelocks. Keep in mind that this setting may prevent backlight notification blinking or any other advanced features to work." name="BLN w/o Wakelock" action="generic /sys/class/misc/backlightnotification/blnww" label="BLN w/o Wakelock"/>
     </settingsPane>
   </settingsTab>
 
@@ -143,7 +144,6 @@
              <spinnerItem name="800MHz" value="800000"/> 
              <spinnerItem name="500MHz" value="500000"/> 
              <spinnerItem name="200MHz" value="200000"/> 
-             <spinnerItem name="100MHz" value="100000"/> 
       </spinner>
       <spinner description="This will set the default CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps." name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
              <spinnerItem name="ondemand" value="ondemand"/> 
