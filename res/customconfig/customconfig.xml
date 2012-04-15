@@ -128,8 +128,8 @@
     <settingsPane description="Other Settings" name="Other Settings">
        <seekBar description="User adjustable gamma shift." 
 		name="Gamma Shift" action="generic /sys/devices/platform/samsung-pd.2/s3cfb.0/spi_gpio.3/spi3.0/lcd/panel/user_gamma_adjust" unit=" pixel" min="-50" reversed="false" step="1" max="50"/>
-       <seekBar description="Vibration intensity level (default 6)" 
-		name="Vibration Intensity" action="generic /sys/devices/platform/tspdrv/vibrator_level" unit=" pixel" min="0" reversed="false" step="1" max="6"/>
+       <!-- seekBar description="Vibration intensity level (default 6)" 
+		name="Vibration Intensity" action="generic /sys/devices/platform/tspdrv/vibrator_level" unit=" pixel" min="0" reversed="false" step="1" max="6"/ -->
        <checkbox description="Check this to activate BLN without wakelocks. Keep in mind that this setting may prevent backlight notification blinking or any other advanced features to work." name="BLN w/o Wakelock" action="generic /sys/class/misc/backlightnotification/blnww" label="BLN w/o Wakelock"/>
     </settingsPane>
   </settingsTab>
