@@ -23,7 +23,7 @@ tar xvf /res/misc/dev.tar
 SECONDROM=1
 NOBOOTLOGO=0
 mount -t ext4 -o ro /dev/block/mmcblk0p12 /preload
-mount -t vfat -o ro /dev/block/mmcblk0p11 /mnt/sdcard
+mount -t vfat /dev/block/mmcblk0p11 /mnt/sdcard
 [ -f /preload/build.prop ] || SECONDROM=0
 [ -f /mnt/sdcard/.secondrom/data.img ] || SECONDROM=0
 [ -f /mnt/sdcard/.secondrom/cache.img ] || SECONDROM=0
@@ -31,7 +31,7 @@ mount -t vfat -o ro /dev/block/mmcblk0p11 /mnt/sdcard
 umount /preload
 umount /mnt/sdcard
 
-if [ "$NOBOOTLOGO" == "1" && "$SECONDROM" == "0" ];then
+if [[ "$NOBOOTLOGO" == "1" && "$SECONDROM" == "0" ]];then
   /sbin/choose_rom
 else
   /sbin/choose_rom $SECONDROM
