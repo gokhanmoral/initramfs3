@@ -1,34 +1,37 @@
 #!/sbin/ext/busybox sh
 
-/sbin/ext/busybox mount -t rootfs -o remount,rw rootfs
-/sbin/ext/busybox insmod /lib/modules/logger.ko
-/sbin/ext/busybox ln -s /sbin/recovery /sbin/busybox
+mount -t rootfs -o remount,rw rootfs
+insmod /lib/modules/logger.ko
+ln -s /sbin/recovery /sbin/busybox
 
-/sbin/ext/busybox ln -s /sbin/busybox /sbin/sh
+ln -s /sbin/busybox /sbin/sh
 
-/sbin/ext/busybox rm /emmc
-/sbin/ext/busybox mkdir /emmc
-/sbin/ext/busybox chmod 777 /emmc
+rm /emmc
+mkdir /emmc
+chmod 777 /emmc
 
-/sbin/ext/busybox rm /sdcard
-/sbin/ext/busybox mkdir /sdcard
-/sbin/ext/busybox chmod 777 /sdcard
+rm /sdcard
+mkdir /sdcard
+chmod 777 /sdcard
 
-/sbin/ext/busybox rm /etc
-/sbin/ext/busybox mkdir /etc
-/sbin/ext/busybox cat /res/etc/recovery.fstab > /etc/recovery.fstab
+rm /etc
+mkdir /etc
+cat /res/etc/recovery.fstab > /etc/recovery.fstab
 
 #start adbd
 stop tvout
 
-/sbin/ext/busybox rm /cache
-/sbin/ext/busybox mkdir /cache
-/sbin/ext/busybox chmod 777 /cache
-/sbin/ext/busybox mount -t ext4 /dev/block/mmcblk0p7 /cache
+rm /cache
+mkdir /cache
+chmod 777 /cache
+mount -t ext4 /dev/block/mmcblk0p7 /cache
 
 cd /
 eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5)
 dd bs=512 if=/dev/block/mmcblk0p5 skip=$recovery_offset count=$recovery_len | xzcat | tar x
+
+# why don't we use thunderbolt scripts in recovery?
+. /sbin/ext/thunderbolt.sh
 
 if /sbin/ext/busybox [ -f /cache/recovery/command ];
 then
