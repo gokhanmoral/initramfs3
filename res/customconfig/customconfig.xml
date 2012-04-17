@@ -136,7 +136,7 @@
 
   <settingsTab name="Misc">
     <settingsPane description="Misc Settings" name="Misc Settings">
-      <button description="Back up the efs partition" name="BackupEFS" action="efs-backup" label="Backup EFS"/>
+      <!-- button description="Back up the efs partition" name="BackupEFS" action="efs-backup" label="Backup EFS"/ -->
       <checkbox description="Enable or Disable Android Logger (needs restart)" name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
       <spinner description="This will set the suspend frequency used in ondemand governor to have ondemandX behaviour. This will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps and only effective while ondemand governor is in use." name="Default Ondemand Suspend Freq." action="generic /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq">
              <spinnerItem name="1200MHz" value="1200000"/> 
