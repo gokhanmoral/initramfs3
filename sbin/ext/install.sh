@@ -11,10 +11,6 @@ extract_payload()
   dd bs=512 if=/dev/block/mmcblk0p5 skip=$load_offset count=$load_len | tar x
 }
 
-. /res/customconfig/customconfig-helper
-read_defaults
-read_config
-
 mount -o remount,rw /system
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 payload_extracted=0

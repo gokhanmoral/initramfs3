@@ -59,12 +59,12 @@ sleep 30
 /sbin/busybox sh /sbin/ext/efs-backup.sh
 ) &
 
+# apply ExTweaks defaults
+/res/uci.sh apply &
+
 ##### init scripts #####
 (
-#apply default config, delay for 5 secs to make sure that everything is initialized
-sleep 5
-/res/uci.sh apply
-sleep 7
+sleep 10
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
 )&
 
