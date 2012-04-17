@@ -21,10 +21,8 @@ while read_dom; do
 action=$(echo $ENTITY |  grep -v \<button | sed -e 's/action=/\naction=/g' |grep action|awk -F'"' '{print $2}')
 if [ "a$action" != a ];then
   actionval=`/res/uci.sh $action`
-  (
-    echo applying: /res/uci.sh $action $actionval
-    eval /res/uci.sh $action $actionval
-  ) &
+  echo applying: /res/uci.sh $action $actionval
+  eval /res/uci.sh $action $actionval
 fi
 done < $CONFIG_XML
 }
