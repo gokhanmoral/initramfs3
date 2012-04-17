@@ -86,6 +86,8 @@ romtype=`cat /proc/sys/kernel/rom_feature_set`
 #fi
 
 echo "ntfs-3g..."
+mkdir /mnt/ntfs
+mount -t tmpfs tmpfs /mnt/ntfs
 if [ ! -s /system/xbin/ntfs-3g ];
 then
   if [ "$payload_extracted" == "0" ];then
