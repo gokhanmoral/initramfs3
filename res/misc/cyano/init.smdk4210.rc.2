@@ -2,14 +2,15 @@ import init.smdk4210.usb.rc
 
 on early-init
     export EXTERNAL_STORAGE /mnt/emmc
-    export SECONDARY_STORAGE /mnt/emmc
+    export SECONDARY_STORAGE /mnt/sdcard
     mkdir /mnt 0775 system system
+    mkdir /mnt/emmc 0775 system system
     mkdir /mnt/sdcard 0775 system system
     mkdir /mnt/emmc 0775 system system
     mkdir /mnt/usbdisk 0775 system system
     mkdir /efs 0771 radio system
-	mkdir /preload 0771 system system
-	mkdir /mnt/.lfs 0755 root root
+    mkdir /preload 0771 system system
+    mkdir /mnt/.lfs 0755 root root
 
 	# for backwards compatibility
 	symlink /mnt/sdcard /sdcard
@@ -32,6 +33,11 @@ on early-init
 on fs
     # mount ext4 partitions
     mount ext4 /res/dev/system /system noatime wait ro
+    mount tmpfs tmpfs /system/lib/modules
+    symlink /lib/modules/cifs.ko /system/lib/modules/cifs.ko
+    symlink /lib/modules/dhd.ko /system/lib/modules/dhd.ko
+    symlink /lib/modules/scsi_wait_scan.ko /system/lib/modules/scsi_wait_scan.ko
+    symlink /lib/modules/Si4709_driver.ko /system/lib/modules/Si4709_driver.ko
     # verfiy filesystem (UMS)
     exec sformat /dev/block/mmcblk0p11 vfat
     # make sure sdcard is mounted because we may have our data and cache partitions on it
@@ -276,16 +282,16 @@ on post-fs-data
     write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 5
     write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 85
 
-on boot
-    chown system system /sys/class/backlight/pwm-backlight/brightness
-    chmod 0660 /sys/class/backlight/pwm-backlight/brightness
-    chown radio system /sys/devices/virtual/misc/melfas_touchkey/brightness
-    chmod 0660 /sys/devices/virtual/misc/melfas_touchkey/brightness
-
 #panorama directory creation
     mkdir /data/pxtmpdir 0775
     chown system system /data/pxtmpdir
     chmod 0775 /data/pxtmpdir
+
+# backlight permissions
+    chown system system /sys/class/backlight/pwm-backlight/brightness
+    chmod 0660 /sys/class/backlight/pwm-backlight/brightness
+    chown radio system /sys/devices/virtual/misc/melfas_touchkey/brightness
+    chmod 0660 /sys/devices/virtual/misc/melfas_touchkey/brightness
 
 # Permissions for dvfs lock
     chown system system /sys/power/cpufreq_max_limit
@@ -296,18 +302,22 @@ on boot
     chown system system /sys/power/gpu_lock
     chmod 0660 /sys/power/gpu_lock
 
-    mount debugfs /sys/kernel/debug /sys/kernel/debug
-
-    setprop ro.build.product GT-I9100
-    setprop ro.product.device GT-I9100
-    setprop ro.radio.noril yes
-
 # Permisions for sensors
     chown radio system /sys/devices/virtual/K3G_GYRO-dev/k3g/gyro_selftest
     chown radio system /sys/devices/virtual/K3G_GYRO-dev/k3g/gyro_get_temp
     chown radio system /sys/devices/virtual/K3G_GYRO-dev/k3g/gyro_power_on
     chown radio system /sys/devices/virtual/accelerometer/accelerometer/acc_file
     chown radio system /sys/devices/virtual/sec/gsensorcal/calibration
+
+# for device encryption
+    setprop vold.post_fs_data_done 1
+
+on boot
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
+
+    setprop ro.build.product GT-I9100
+    setprop ro.product.device GT-I9100
+    setprop ro.radio.noril yes
 
 # permissions for NFC
     setprop ro.nfc.port "I2C"
