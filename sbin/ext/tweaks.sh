@@ -7,3 +7,5 @@
 mount -o noatime,remount,rw,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache /cache;
 mount -o noatime,remount,rw,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /data /data;
 
+# to help with wifi toggling problems (thanks to wjchen)
+echo 16384 > /proc/sys/vm/min_free_kbytes
