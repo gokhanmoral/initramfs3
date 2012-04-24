@@ -1,8 +1,8 @@
 import init.smdk4210.usb.rc
 
 on early-init
-    export SECONDARY_STORAGE /mnt/sdcard
-    export EXTERNAL_STORAGE /mnt/emmc
+    export SECONDARY_STORAGE /mnt/emmc
+    export EXTERNAL_STORAGE /mnt/sdcard
     mkdir /mnt 0775 system system
     mkdir /mnt/emmc 0775 system system
     mkdir /mnt/sdcard 0775 system system
@@ -37,10 +37,10 @@ on fs
     symlink /lib/modules/dhd.ko /system/lib/modules/dhd.ko
     symlink /lib/modules/scsi_wait_scan.ko /system/lib/modules/scsi_wait_scan.ko
     symlink /lib/modules/Si4709_driver.ko /system/lib/modules/Si4709_driver.ko
-    # verfiy filesystem (UMS)
+    # verify filesystem (UMS)
     exec sformat /dev/block/mmcblk0p11 vfat
     # make sure sdcard is mounted because we may have our data and cache partitions on it
-    mount vfat /dev/block/mmcblk0p11 /mnt/sdcard wait utf8
+    mount vfat /dev/block/mmcblk0p11 /mnt/.secondrom wait utf8
 
     exec sfsck /res/dev/cache ext4
     mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait
