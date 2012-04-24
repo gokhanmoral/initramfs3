@@ -36,3 +36,4 @@ suspend_freq=500000
 vibrator_level=3
 user_gamma_adjust=0
 blnww=on
+cpustepcount=6
