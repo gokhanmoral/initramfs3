@@ -14,16 +14,3 @@ fi;
 if [ -f /data/local/customboot.sh ]; then
   /sbin/busybox sh /data/local/customboot.sh
 fi;
-
-# fix for samsung roms - setting scaling_max_freq - gm
-#if [ "`cat /proc/sys/kernel/rom_feature_set`" == "0" ];
-#then
-#  freq=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq`
-#  if [ "$freq" != "1200" ];then
-#    (
-#     sleep 25;
-#     echo $freq > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
-#    ) &
-#  fi
-#fi
-

@@ -37,3 +37,7 @@ vibrator_level=6
 user_gamma_adjust=0
 blnww=off
 cpustepcount=6
+notification_enabled=off
+notification_timeout=0
+led_timeout=0
+breathing=off

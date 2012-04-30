@@ -82,11 +82,10 @@ sleep 30
 ) &
 
 # apply ExTweaks defaults
-/res/uci.sh apply &
+/res/uci.sh apply
 
 ##### init scripts #####
 (
-sleep 10
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
 )&
 

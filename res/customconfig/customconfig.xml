@@ -132,10 +132,34 @@
 		name="Gamma Shift" action="generic /sys/devices/platform/samsung-pd.2/s3cfb.0/spi_gpio.3/spi_master/spi3/spi3.0/lcd/panel/user_gamma_adjust" unit="" min="-50" reversed="false" step="5" max="50"/>
        <seekBar description="Vibration intensity level (default 6)" 
 		name="Vibration Intensity" action="generic /sys/devices/platform/tspdrv/vibrator_level" unit="" min="0" reversed="false" step="1" max="6"/>
+    </settingsPane>
+  </settingsTab>
+  <settingsTab name="BLN">
+    <settingsPane description="BackLightNotification and Touchkey related Settings" name="BackLightNotification">
+       <checkbox description="BackLightNotification" name="BLN" action="generic /sys/class/misc/notification/notification_enabled" label="BLN"/>
+       <spinner description="Notification timeout. 0: disabled" name="notification_timeout" action="generic /sys/class/misc/notification/notification_timeout">
+             <spinnerItem name="Always-on" value="0"/> 
+             <spinnerItem name="5 minutes" value="300000"/> 
+             <spinnerItem name="10 minutes" value="600000"/> 
+             <spinnerItem name="20 minutes" value="12000000"/> 
+             <spinnerItem name="30 minutes" value="18000000"/> 
+             <spinnerItem name="60 minutes" value="36000000"/> 
+             <spinnerItem name="120 minutes" value="72000000"/> 
+       </spinner>
+       <checkbox description="Breathing effect when BLN is active" name="Breathing" action="generic /sys/class/misc/notification/breathing" label="Breathing"/>
+       <spinner description="Led timeout. Leave it 0 if your ROM already has led timeout support (0: disabled)" name="led_timeout" action="generic /sys/class/misc/notification/led_timeout">
+             <spinnerItem name="Disabled" value="0"/> 
+             <spinnerItem name="1.5 sec" value="1500"/> 
+             <spinnerItem name="3 sec" value="3000"/> 
+             <spinnerItem name="6 sec" value="6000"/> 
+             <spinnerItem name="15 sec" value="15000"/> 
+             <spinnerItem name="30 sec" value="30000"/> 
+             <spinnerItem name="60 sec" value="60000"/> 
+       </spinner>
+       <button description="Use this button to test bln. BLN will be active after you turn the screen off." name="Test BLN" action="test-bln" label="Test BLN"/>
        <!-- checkbox description="Check this to activate BLN without wakelocks. Keep in mind that this setting may prevent backlight notification blinking or any other advanced features to work." name="BLN w/o Wakelock" action="generic /sys/class/misc/backlightnotification/blnww" label="BLN w/o Wakelock"/ -->
     </settingsPane>
   </settingsTab>
-
   <settingsTab name="Misc">
     <settingsPane description="Misc Settings" name="Misc Settings">
       <!-- button description="Back up the efs partition" name="BackupEFS" action="efs-backup" label="Backup EFS"/ -->
