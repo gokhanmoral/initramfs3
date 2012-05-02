@@ -23,6 +23,22 @@
                 name="rate" action="generic /sys/module/stand_hotplug/parameters/rate" unit=" jiffies" min="50" reversed="false" step="50" max="1000"/>
        <seekBar description="Sets the frequency below which second core will not be turned on, regardless of thresholds. (default: 100000)" 
 		name="freq_min" action="generic /sys/module/stand_hotplug/parameters/freq_min" unit=" kHz" min="0" reversed="false" step="100000" max="1200000"/>
+       <!-- seekBar description="Sets second core kick-out threshold for screen-on state" 
+		name="loadl" action="generic /sys/module/pm_hotplug/parameters/loadl" unit="%" min="0" reversed="false" step="5" max="100"/>
+       <seekBar description="Sets second core kick-in threshold for screen-on state" 
+		name="loadh" action="generic /sys/module/pm_hotplug/parameters/loadh" unit="%" min="0" reversed="false" step="5" max="100"/>
+       <seekBar description="Sets second core kick-out threshold for screen-off state" 
+		name="loadl_scroff" action="generic /sys/module/pm_hotplug/parameters/loadl_scroff" unit="%" min="0" reversed="false" step="5" max="100"/>
+       <seekBar description="Sets second core kick-in threshold for screen-off state" 
+		name="loadh_scroff" action="generic /sys/module/pm_hotplug/parameters/loadh_scroff" unit="%" min="0" reversed="false" step="5" max="100"/>
+       <seekBar description="Sets hot plug sampling intervals for screen-on state" 
+		name="rate" action="generic /sys/module/pm_hotplug/parameters/rate" unit=" jiffies" min="50" reversed="false" step="50" max="2000"/>
+       <seekBar description="Sets hot plug sampling intervals for screen-on state when the second core is on" 
+		name="rate_cpuon" action="generic /sys/module/pm_hotplug/parameters/rate_cpuon" unit=" jiffies" min="50" reversed="false" step="50" max="2000"/>
+       <seekBar description="Sets hot plug sampling intervals for screen-off state" 
+		name="rate_scroff" action="generic /sys/module/pm_hotplug/parameters/rate_scroff" unit=" jiffies" min="50" reversed="false" step="50" max="2000"/>
+       <seekBar description="Set frequency below which second core will not be turned on, regardless of thresholds." 
+		name="freq_cpu1on" action="generic /sys/module/pm_hotplug/parameters/freq_cpu1on" unit=" kHz" min="100000" reversed="false" step="100000" max="1200000"/ -->
     </settingsPane>
 
     <settingsPane description="" 
@@ -138,7 +154,9 @@
     <settingsPane description="BackLightNotification and Touchkey related Settings" name="BackLightNotification">
        <checkbox description="BackLightNotification" name="BLN" action="generic /sys/class/misc/notification/notification_enabled" label="BLN"/>
        <spinner description="Notification timeout. 0: disabled" name="notification_timeout" action="generic /sys/class/misc/notification/notification_timeout">
-             <spinnerItem name="Always-on" value="0"/> 
+             <spinnerItem name="Never timeout" value="0"/> 
+             <spinnerItem name="1 minute" value="60000"/> 
+             <spinnerItem name="3 minutes" value="180000"/> 
              <spinnerItem name="5 minutes" value="300000"/> 
              <spinnerItem name="10 minutes" value="600000"/> 
              <spinnerItem name="20 minutes" value="12000000"/> 
@@ -146,8 +164,12 @@
              <spinnerItem name="60 minutes" value="36000000"/> 
              <spinnerItem name="120 minutes" value="72000000"/> 
        </spinner>
-       <checkbox description="Breathing effect when BLN is active" name="Breathing" action="generic /sys/class/misc/notification/breathing" label="Breathing"/>
-       <spinner description="Led timeout. Leave it 0 if your ROM already has led timeout support (0: disabled)" name="led_timeout" action="generic /sys/class/misc/notification/led_timeout">
+       <spinner description="This setting will set led behavior in BLN." name="BLN Effect" action="bln_effect">
+             <spinnerItem name="Steady" value="0"/> 
+             <spinnerItem name="Breathing" value="1"/> 
+             <spinnerItem name="Blinking" value="2"/> 
+       </spinner> 
+       <spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. In CM9, if you have lights enabled screen brightness changes may trigger lights on. It is normal. If you want them to stay disabled you have to disable leds in CM9 menu." name="led_timeout" action="generic /sys/class/misc/notification/led_timeout">
              <spinnerItem name="Disabled" value="0"/> 
              <spinnerItem name="1.5 sec" value="1500"/> 
              <spinnerItem name="3 sec" value="3000"/> 
@@ -158,6 +180,8 @@
        </spinner>
        <button description="Use this button to test bln. BLN will be active after you turn the screen off." name="Test BLN" action="test-bln" label="Test BLN"/>
        <!-- checkbox description="Check this to activate BLN without wakelocks. Keep in mind that this setting may prevent backlight notification blinking or any other advanced features to work." name="BLN w/o Wakelock" action="generic /sys/class/misc/backlightnotification/blnww" label="BLN w/o Wakelock"/ -->
+       <seekBar description="Controls touchpad led voltage level (default: 3000)" 
+		name="Led Voltage Level" action="generic /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness" unit=" mV" min="2500" reversed="false" step="50" max="3300"/>
     </settingsPane>
   </settingsTab>
   <settingsTab name="Misc">
