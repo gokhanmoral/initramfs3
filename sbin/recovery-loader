@@ -33,6 +33,12 @@ dd bs=512 if=/dev/block/mmcblk0p5 skip=$recovery_offset count=$recovery_len | xz
 # why don't we use thunderbolt scripts in recovery?
 . /sbin/ext/thunderbolt.sh
 
+mkdir /secondrom_cache
+mkdir /secondrom_data
+mkdir /secondrom_system
+mkdir /mnt/.secondrom
+mount -t vfat /dev/block/mmcblk0p11 /mnt/.secondrom
+
 if /sbin/ext/busybox [ -f /cache/recovery/command ];
 then
   /sbin/ext/busybox cp /res/keys-samsung /res/keys
