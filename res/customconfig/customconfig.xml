@@ -56,10 +56,10 @@
     <settingsPane description="" 
 		name="CPU Stepping Settings">
       <spinner description="This setting will change CPU step count (Restart required)." name="CPU Step Count" action="generic /tmp/cpustepcount">
-             <spinnerItem name="5 (Samsung default)" value="5"/> 
-             <spinnerItem name="6 (SiyahKernel 3.x default)" value="6"/> 
-             <spinnerItem name="7 (6-step + 1500MHz)" value="7"/> 
-             <spinnerItem name="8 (SiyahKernel 2.x default)" value="8"/> 
+             <spinnerItem name="5 (200-500-800-1000-1200MHz)" value="5"/> 
+             <spinnerItem name="6 (5-steps + 1400MHz)" value="6"/> 
+             <spinnerItem name="7 (6-steps + 1500MHz)" value="7"/> 
+             <spinnerItem name="8 (6-steps + 100MHz + 1600MHz)" value="8"/> 
              <spinnerItem name="9 (8-step + 1500MHz)" value="9"/> 
              <spinnerItem name="18 (All available)" value="18"/> 
       </spinner>
