@@ -145,6 +145,7 @@ on post-fs
     chmod 0770 /cache
 
     # This may have been created by the recovery system with odd permissions
+    mkdir /cache/recovery 0770
     chown system cache /cache/recovery
     chmod 0770 /cache/recovery
 
