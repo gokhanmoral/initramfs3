@@ -35,6 +35,7 @@ dd bs=512 if=/dev/block/mmcblk0p5 skip=$recovery_offset count=$recovery_len | xz
 
 mkdir /mnt/.secondrom
 mount -t vfat /dev/block/mmcblk0p11 /mnt/.secondrom
+mkdir /mnt/.secondrom/.secondrom
 rm /secondrom_cache
 mkdir /secondrom_cache
 mount -t ext4 /mnt/.secondrom/.secondrom/cache.img /secondrom_cache
