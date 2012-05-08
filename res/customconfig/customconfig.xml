@@ -12,33 +12,17 @@
              <spinnerItem name="Second core always-on" value="always-on"/> 
        </spinner>
        <seekBar description="second core will be enabled when the load goes above this threshold (default is 30)"
-                name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="0" reversed="false" step="1" max="100"/>
+                name="load_h0" action="generic /sys/module/stand_hotplug/parameters/load_h0" unit="%" min="0" reversed="false" step="1" max="50"/>
        <seekBar description="second core will be disabled when the load goes below this threshold (default is 20)"
-                name="load_l1" action="generic /sys/module/stand_hotplug/parameters/load_l1" unit="%" min="0" reversed="false" step="1" max="100"/>
+                name="load_l1" action="generic /sys/module/stand_hotplug/parameters/load_l1" unit="%" min="0" reversed="false" step="1" max="50"/>
        <seekBar description="(default is 2)"
                 name="min_rq" action="generic /sys/module/stand_hotplug/parameters/min_rq" unit="" min="0" reversed="false" step="1" max="2"/>
        <seekBar description="(default is 20)"
-                name="load_rq" action="generic /sys/module/stand_hotplug/parameters/load_rq" unit="%" min="5" reversed="false" step="1" max="100"/>
+                name="load_rq" action="generic /sys/module/stand_hotplug/parameters/load_rq" unit="%" min="5" reversed="false" step="1" max="50"/>
        <seekBar description="Sets hot plug sampling intervals for screen-on state (default is 100)"
                 name="rate" action="generic /sys/module/stand_hotplug/parameters/rate" unit=" jiffies" min="50" reversed="false" step="50" max="1000"/>
        <seekBar description="Sets the frequency below which second core will not be turned on, regardless of thresholds. (default: 100000)" 
 		name="freq_min" action="generic /sys/module/stand_hotplug/parameters/freq_min" unit=" kHz" min="0" reversed="false" step="100000" max="1200000"/>
-       <!-- seekBar description="Sets second core kick-out threshold for screen-on state" 
-		name="loadl" action="generic /sys/module/pm_hotplug/parameters/loadl" unit="%" min="0" reversed="false" step="5" max="100"/>
-       <seekBar description="Sets second core kick-in threshold for screen-on state" 
-		name="loadh" action="generic /sys/module/pm_hotplug/parameters/loadh" unit="%" min="0" reversed="false" step="5" max="100"/>
-       <seekBar description="Sets second core kick-out threshold for screen-off state" 
-		name="loadl_scroff" action="generic /sys/module/pm_hotplug/parameters/loadl_scroff" unit="%" min="0" reversed="false" step="5" max="100"/>
-       <seekBar description="Sets second core kick-in threshold for screen-off state" 
-		name="loadh_scroff" action="generic /sys/module/pm_hotplug/parameters/loadh_scroff" unit="%" min="0" reversed="false" step="5" max="100"/>
-       <seekBar description="Sets hot plug sampling intervals for screen-on state" 
-		name="rate" action="generic /sys/module/pm_hotplug/parameters/rate" unit=" jiffies" min="50" reversed="false" step="50" max="2000"/>
-       <seekBar description="Sets hot plug sampling intervals for screen-on state when the second core is on" 
-		name="rate_cpuon" action="generic /sys/module/pm_hotplug/parameters/rate_cpuon" unit=" jiffies" min="50" reversed="false" step="50" max="2000"/>
-       <seekBar description="Sets hot plug sampling intervals for screen-off state" 
-		name="rate_scroff" action="generic /sys/module/pm_hotplug/parameters/rate_scroff" unit=" jiffies" min="50" reversed="false" step="50" max="2000"/>
-       <seekBar description="Set frequency below which second core will not be turned on, regardless of thresholds." 
-		name="freq_cpu1on" action="generic /sys/module/pm_hotplug/parameters/freq_cpu1on" unit=" kHz" min="100000" reversed="false" step="100000" max="1200000"/ -->
     </settingsPane>
 
     <settingsPane description="" 
