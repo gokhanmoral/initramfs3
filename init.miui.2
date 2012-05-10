@@ -139,8 +139,8 @@ on post-fs
     # once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
 
-#    insmod /lib/modules/j4fs.ko
-#    mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs
+    insmod /lib/modules/j4fs.ko
+    mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs
 
     # We chown/chmod /cache again so because mount is run as root + defaults
     chown system cache /cache

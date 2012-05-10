@@ -60,6 +60,7 @@ on post-fs-data
     insmod /system/lib/modules/Si4709_driver.ko
     
 # mount param.lfs
+    insmod /lib/modules/j4fs.ko
     mount j4fs /dev/block/mmcblk0p4 /mnt/.lfs
 
 # GPS
