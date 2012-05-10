@@ -70,9 +70,6 @@ if [ "$logger" == "off" ];then
   echo 0 > /sys/module/xt_qtaguid/parameters/debug_mask
 fi
 
-# for ntfs automounting
-insmod /lib/modules/fuse.ko
-
 #/sbin/busybox sh /sbin/ext/busybox.sh
 
 /sbin/busybox sh /sbin/ext/properties.sh
