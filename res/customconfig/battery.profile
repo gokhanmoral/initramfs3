@@ -39,3 +39,4 @@ notification_timeout=0
 led_timeout=0
 bln_effect=0
 touchkey_brightness=2700
+led_fadeout=off
