@@ -38,7 +38,7 @@
     </settingsPane>
 
     <settingsPane description=""
-		name="CPU Step Count & Undervolting">
+		name="CPU Step Count + Undervolting">
       <spinner description="This setting will change CPU step count (Restart required)." name="CPU Step Count" action="generic /tmp/cpustepcount">
              <spinnerItem name="5 (200-500-800-1000-1200MHz)" value="5"/> 
              <spinnerItem name="6 (5-steps + 1400MHz)" value="6"/> 
