@@ -22,6 +22,9 @@ fi
 read_defaults
 read_config
 
+//cpu undervolting
+echo "${cpu_undervolting}" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
+
 //change cpu step count
 case "${cpustepcount}" in
   5)
