@@ -40,3 +40,4 @@ led_timeout=0
 bln_effect=0
 touchkey_brightness=2700
 led_fadeout=off
+led_on_touch=off

@@ -162,7 +162,8 @@
              <spinnerItem name="30 sec" value="30000"/> 
              <spinnerItem name="60 sec" value="60000"/> 
        </spinner>
-       <checkbox description="Led fadeout effect" name="led-fadeout" action="generic /sys/class/misc/notification/led_fadeout" label="led-fadeout"/>
+       <checkbox description="Led fadeout effect. If you are on a Samsung ROM, you need to set touchkey leds to always on or always off and use led timeout in ExTweaks." name="led-fadeout" action="generic /sys/class/misc/notification/led_fadeout" label="led-fadeout"/>
+       <checkbox description="Selecting this will activate turning touckey leds on when you touch the screen (only when led timeout is enabled)." name="Leds on with touch" action="generic /sys/class/misc/notification/led_on_touch" label="led-on-touch"/>
        <button description="Use this button to test bln. BLN will be active after you turn the screen off." name="Test BLN" action="test-bln" label="Test BLN"/>
        <seekBar description="Controls touchpad led voltage level (default: 3000)" 
 		name="Led Voltage Level" action="generic /sys/devices/virtual/sec/sec_touchkey/touchkey_brightness" unit=" mV" min="2500" reversed="false" step="50" max="3300"/>
