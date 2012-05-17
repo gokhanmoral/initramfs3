@@ -127,7 +127,7 @@
     <settingsPane description="Brightness Curve settings which modify auto-brightness behavior." name="Brightness Curve">
        <seekBar description="Sets touchscreen move sensitivity (vitalij value)." 
 		name="TouchMove Sensitivity" action="generic /sys/devices/platform/s3c2440-i2c.3/i2c-3/3-004a/mov_hysti" unit=" pixel" min="0" reversed="false" step="1" max="20"/>
-       <seekBar description="Setting min_bl higher will result in staying lowest brightness level for brighter conditions (default 40)" 
+       <seekBar description="Setting min_bl higher will result in staying lowest brightness level for brighter conditions (default 30)" 
 		name="min_bl" action="generic /sys/class/misc/brightness_curve/min_bl" unit="" min="0" reversed="false" step="10" max="150"/>
        <seekBar description="Minimum brightness level (default 0)" 
 		name="min_gamma" action="generic /sys/class/misc/brightness_curve/min_gamma" unit="" min="0" reversed="false" step="1" max="24"/>
@@ -188,6 +188,7 @@
              <spinnerItem name="200MHz" value="200000"/> 
       </spinner -->
       <spinner description="This will set the default CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps." name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
+             <spinnerItem name="pegasusq" value="pegasusq"/> 
              <spinnerItem name="ondemand" value="ondemand"/> 
              <spinnerItem name="conservative" value="conservative"/> 
              <spinnerItem name="lulzactive" value="lulzactive"/> 
