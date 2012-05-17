@@ -40,15 +40,15 @@ case "${cpustepcount}" in
     echo 1500 1400 1200 1000 800 500 200 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
     ;;
   8)
-    echo 100000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    echo 200000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
     echo 1600 1400 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
     ;;
   9)
-    echo 100000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    echo 200000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
     echo 1600 1500 1400 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
     ;;
   18)
-    echo 100000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    echo 200000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
     echo 1600 1500 1400 1300 1200 1100 1000 900 800 700 600 500 400 300 200 100 50 25 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
     ;;
 esac;
