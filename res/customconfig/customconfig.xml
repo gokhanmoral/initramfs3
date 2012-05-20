@@ -33,6 +33,12 @@
              <spinnerItem name="AFTR only" value="1"/> 
              <spinnerItem name="Idle only" value="0"/> 
       </spinner>
+      <spinner description="Sets the smooth scaling level which prevents ondemand based governors to jump directly to maximum frequency with load spikes. This setting will only change the behavior of ondemand and pegasusq governors." name="Smooth Scaling Level" action="generickmem smooth_level 0 int">
+             <spinnerItem name="1600MHz" value="0"/> 
+             <spinnerItem name="1200MHz" value="4"/> 
+             <spinnerItem name="1000MHz" value="6"/> 
+             <spinnerItem name="800MHz" value="8"/> 
+      </spinner>
       <seekBar description="Sets the sched_mc value which changes the cpu scheduler behaviour for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be tried to be loaded more and setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)"
             name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
     </settingsPane>
