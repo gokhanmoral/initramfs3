@@ -35,3 +35,23 @@ fi;
 sysctl -w kernel.sem="500 512000 100 2048";
 sysctl -w kernel.shmmax=268435456;
 sysctl -w kernel.msgmni=1024;
+
+# touch sensitivity settings.
+(
+# offset 59: MXT224_THRESHOLD_BATT_INIT
+kmemhelper -n mxt224_data -t char -o 59 50
+# offset 60: MXT224_THRESHOLD_CHRG
+kmemhelper -n mxt224_data -t char -o 60 55
+# offset 61: MXT224_NOISE_THRESHOLD_BATT
+kmemhelper -n mxt224_data -t char -o 61 30
+# offset 62: MXT224_NOISE_THRESHOLD_CHRG
+kmemhelper -n mxt224_data -t char -o 62 40
+# offset 63: MXT224_MOVFILTER_BATT
+kmemhelper -n mxt224_data -t char -o 63 11
+# offset 64: MXT224_MOVFILTER_CHRG
+kmemhelper -n mxt224_data -t char -o 64 46
+# offset 67: MXT224E_THRESHOLD_BATT
+kmemhelper -n mxt224_data -t char -o 67 50
+# offset 77: MXT224E_MOVFILTER_BATT
+kmemhelper -n mxt224_data -t char -o 77 46
+)&
