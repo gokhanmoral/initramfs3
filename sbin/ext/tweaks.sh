@@ -7,9 +7,7 @@
 mount -o noatime,remount,rw,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache /cache;
 mount -o noatime,remount,rw,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /data /data;
 
-setprop debug.performance.tuning 1; 
-setprop video.accelerate.hw 1;
-setprop debug.sf.hw 1;
+setprop persist.sys.ui.hw true
 
 echo 8192 > /proc/sys/vm/min_free_kbytes
 echo 0 > /proc/sys/vm/swappiness
