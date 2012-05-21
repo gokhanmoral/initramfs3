@@ -36,12 +36,10 @@ else
 fi
 
 if [ "$?" == "1" ]; then
-  mv /res/misc/cyano/init.smdk4210.rc.2 /res/misc/cyano/init.smdk4210.rc
-  mv /init.rc.2 /init.rc
-  mv /init.miui.2 /init.miui
-  mv /init.b2g.2 /init.b2g
+  SECONDROM=1
+else
+  SECONDROM=0
 fi
-
 
 /sbin/busybox mount -t ext4 /res/dev/system /system
 
@@ -72,25 +70,30 @@ B2G=0
 
 if [ "$B2G" == 1 ];
 then
-echo 0 > /proc/sys/kernel/rom_feature_set
-mv /init.b2g /init.rc
-exec /sbin/init.b2g
+patch -p1 < /res/misc/b2g.patch
+mv /sbin/init.b2g /sbin/init.samsung
 fi;
 
 if [ "$AOSP" == 1 ];
 then
 echo 1 > /proc/sys/kernel/rom_feature_set
-/sbin/busybox umount /system
-exec /sbin/init.cm
+patch -p1 < /res/misc/cm9.patch
+mv /sbin/init.cm /sbin/init.samsung
+rm /init.rc.2
+else
+echo 0 > /proc/sys/kernel/rom_feature_set
+rm /init.smdk4210.rc.2
 fi;
 
 if [ "$MIUI" == 1 ];
 then
-mv /init.miui /init.rc
-mv /default.prop.miui /default.prop
+patch -p1 < /res/misc/miui.patch
 fi
 
-rm -f /init.miui
-echo 0 > /proc/sys/kernel/rom_feature_set
+if [ "$SECONDROM" == "1" ];then
+  mv /init.smdk4210.rc.2 /init.smdk4210.rc
+  mv /init.rc.2 /init.rc
+fi
+
 busybox umount /system
 exec /sbin/init.samsung

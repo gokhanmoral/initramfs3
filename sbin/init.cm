@@ -9,7 +9,7 @@ busybox rm init
 
 rm /init
 mv /innt /init
-busybox cp -a /res/misc/cyano/* /
+#busybox cp -a /res/misc/cyano/* /
 
 busybox date >>boot.txt
 busybox rm -fr /res/misc/cyano /dev/*

@@ -107,7 +107,7 @@ on fs
 # mount ext4 partitions
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
     mount ext4 /res/dev/system /system noatime wait ro
-    
+
     # verify filesystem (UMS)
     exec sformat /dev/block/mmcblk0p11 vfat
     # make sure sdcard is mounted because we may have our data and cache partitions on it

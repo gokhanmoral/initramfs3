@@ -1,0 +1,33 @@
+diff -ruN init.samsung/default.prop init.miui/default.prop
+--- init.samsung/default.prop	2012-05-21 15:21:24.805842887 +0300
++++ init.miui/default.prop	2012-05-21 15:21:24.809842886 +0300
+@@ -4,4 +4,4 @@
+ ro.secure=1
+ ro.allow.mock.location=0
+ ro.debuggable=1
+-persist.sys.usb.config=mtp,adb
++persist.sys.usb.config=mass_storage,adb
+diff -ruN init.samsung/init.rc init.miui/init.rc
+--- init.samsung/init.rc	2012-05-21 15:21:24.821842888 +0300
++++ init.miui/init.rc	2012-05-21 15:21:24.821842888 +0300
+@@ -22,7 +22,7 @@
+     export ANDROID_DATA /data
+     export ASEC_MOUNTPOINT /mnt/asec
+     export LOOP_MOUNTPOINT /mnt/obb
+-    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar
++    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework-miui.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar:/system/framework/sechardware.jar
+ 
+ # Disable CFQ slice idle delay
+     write /sys/block/mmcblk0/queue/iosched/slice_idle 0
+diff -ruN init.samsung/init.rc.2 init.miui/init.rc.2
+--- init.samsung/init.rc.2	2012-05-21 15:35:42.000000000 +0300
++++ init.miui/init.rc.2	2012-05-21 15:35:00.000000000 +0300
+@@ -22,7 +22,7 @@
+     export ANDROID_DATA /data
+     export ASEC_MOUNTPOINT /mnt/asec
+     export LOOP_MOUNTPOINT /mnt/obb
+-    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar
++    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework-miui.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar:/system/framework/sechardware.jar
+ 
+ # Disable CFQ slice idle delay
+     write /sys/block/mmcblk0/queue/iosched/slice_idle 0
