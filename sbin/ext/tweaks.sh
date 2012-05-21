@@ -7,3 +7,31 @@
 mount -o noatime,remount,rw,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache /cache;
 mount -o noatime,remount,rw,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /data /data;
 
+setprop debug.performance.tuning 1; 
+setprop video.accelerate.hw 1;
+setprop debug.sf.hw 1;
+
+echo 8192 > /proc/sys/vm/min_free_kbytes
+echo 0 > /proc/sys/vm/swappiness
+echo 90 > /proc/sys/vm/dirty_ratio
+echo 40 > /proc/sys/vm/dirty_background_ratio
+echo 20 > /proc/sys/vm/vfs_cache_pressure
+echo 2000 > /proc/sys/vm/dirty_writeback_centisecs
+echo 200 > /proc/sys/vm/dirty_expire_centisecs
+
+echo 10000000 > /proc/sys/kernel/sched_latency_ns 
+echo 2000000 > /proc/sys/kernel/sched_wakeup_granularity_ns
+
+
+setprop ro.telephony.call_ring.delay 1000; # let's minimize the time Android waits until it rings on a call
+if [ "`getprop dalvik.vm.heapsize | sed 's/m//g'`" -lt 64 ];then
+	setprop dalvik.vm.heapsize 64m; # leave that setting to cyanogenmod settings or uncomment it if needed
+fi;
+setprop wifi.supplicant_scan_interval 120; # higher is not recommended, scans while not connected anyway so shouldn't affect while connected
+if  [ -z "`getprop windowsmgr.max_events_per_sec`"  ] || [ "`getprop windowsmgr.max_events_per_sec`" -lt 60 ];then
+	setprop windowsmgr.max_events_per_sec 60; # smoother GUI
+fi;
+
+sysctl -w kernel.sem="500 512000 100 2048";
+sysctl -w kernel.shmmax=268435456;
+sysctl -w kernel.msgmni=1024;

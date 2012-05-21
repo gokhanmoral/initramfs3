@@ -30,7 +30,7 @@ do
 	fi;
 	if [ -e $i/queue/nr_requests ];
 	then
-		echo 1024 > $i/queue/nr_requests; # for starters: keep it sane
+		echo 2048 > $i/queue/nr_requests;
 	fi;
 	#CFQ specific
 	if [ -e $i/queue/iosched/back_seek_penalty ];
@@ -45,12 +45,12 @@ do
 	#CFQ Specific
 	if [ -e $i/queue/iosched/slice_idle ];
 	then 
-		echo 0 > $i/queue/iosched/slice_idle; # previous: 1
+		echo 1 > $i/queue/iosched/slice_idle; # previous: 1
 	fi;
 	# deadline/VR/SIO scheduler specific
 	if [ -e $i/queue/iosched/fifo_batch ];
 	then
-		echo 1 > $i/queue/iosched/fifo_batch;
+		echo 4 > $i/queue/iosched/fifo_batch;
 	fi;
 	if [ -e $i/queue/iosched/writes_starved ];
 	then
@@ -60,6 +60,16 @@ do
 	if [ -e $i/queue/iosched/quantum ];
 	then
 		echo 8 > $i/queue/iosched/quantum;
+	fi;
+	#CFQ specific
+	if [ -e $i/queue/iosched/slice_async_rq ];
+	then 
+		echo 4 > $i/queue/iosched/slice_async_rq;
+	fi;
+	#CFQ specific
+	if [ -e $i/queue/iosched/back_seek_max ];
+	then 
+		echo 1000000000 > $i/queue/iosched/back_seek_max;
 	fi;
 	#VR Specific
 	if [ -e $i/queue/iosched/rev_penalty ];
@@ -86,6 +96,14 @@ do
 #          echo "128" >  $i/queue/max_sectors_kb
 	
 done;
+# Specifically for NAND devices where reads are faster than writes, writes starved 2:1 is good
+for i in $STL $BML $ZRM $MTD;
+do
+	if [ -e $i/queue/iosched/writes_starved ];
+	then
+		echo 2 > $i/queue/iosched/writes_starved;
+	fi;
+done;
 
 
 
@@ -93,15 +111,15 @@ done;
 # TWEAKS: raising read_ahead_kb cache-value for mounts that are sdcard-like to 1024 
 # =========
 
-#if [ -e /sys/devices/virtual/bdi/179:0/read_ahead_kb ];
-#then
-#    echo "1024" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
-#fi;
+if [ -e /sys/devices/virtual/bdi/179:0/read_ahead_kb ];
+then
+    echo "1024" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
+fi;
 	
-#if [ -e /sys/devices/virtual/bdi/179:8/read_ahead_kb ];
-#  then
-#    echo "1024" > /sys/devices/virtual/bdi/179:8/read_ahead_kb;
-#fi;
+if [ -e /sys/devices/virtual/bdi/179:8/read_ahead_kb ];
+  then
+    echo "1024" > /sys/devices/virtual/bdi/179:8/read_ahead_kb;
+fi;
 
 if [ -e /sys/devices/virtual/bdi/179:16/read_ahead_kb ];
   then
