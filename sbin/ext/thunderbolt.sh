@@ -45,7 +45,7 @@ do
 	#CFQ Specific
 	if [ -e $i/queue/iosched/slice_idle ];
 	then 
-		echo 1 > $i/queue/iosched/slice_idle; # previous: 1
+		echo 0 > $i/queue/iosched/slice_idle; # previous: 1
 	fi;
 	# deadline/VR/SIO scheduler specific
 	if [ -e $i/queue/iosched/fifo_batch ];
