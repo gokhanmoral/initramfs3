@@ -18,15 +18,15 @@ echo 200 > /proc/sys/vm/dirty_expire_centisecs
 echo 10000000 > /proc/sys/kernel/sched_latency_ns 
 echo 2000000 > /proc/sys/kernel/sched_wakeup_granularity_ns
 
-
-setprop ro.telephony.call_ring.delay 1000; # let's minimize the time Android waits until it rings on a call
-if [ "`getprop dalvik.vm.heapsize | sed 's/m//g'`" -lt 64 ];then
-	setprop dalvik.vm.heapsize 64m; # leave that setting to cyanogenmod settings or uncomment it if needed
-fi;
-setprop wifi.supplicant_scan_interval 120; # higher is not recommended, scans while not connected anyway so shouldn't affect while connected
-if  [ -z "`getprop windowsmgr.max_events_per_sec`"  ] || [ "`getprop windowsmgr.max_events_per_sec`" -lt 60 ];then
-	setprop windowsmgr.max_events_per_sec 60; # smoother GUI
-fi;
+# the following tweaks are commented and left here as an example for those who want to enable them
+#setprop ro.telephony.call_ring.delay 1000; # let's minimize the time Android waits until it rings on a call
+#if [ "`getprop dalvik.vm.heapsize | sed 's/m//g'`" -lt 64 ];then
+#	setprop dalvik.vm.heapsize 64m; # leave that setting to cyanogenmod settings or uncomment it if needed
+#fi;
+#setprop wifi.supplicant_scan_interval 120; # higher is not recommended, scans while not connected anyway so shouldn't affect while connected
+#if  [ -z "`getprop windowsmgr.max_events_per_sec`"  ] || [ "`getprop windowsmgr.max_events_per_sec`" -lt 60 ];then
+#	setprop windowsmgr.max_events_per_sec 60; # smoother GUI
+#fi;
 
 sysctl -w kernel.sem="500 512000 100 2048";
 sysctl -w kernel.shmmax=268435456;
