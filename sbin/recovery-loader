@@ -25,6 +25,10 @@ rm /cache
 mkdir /cache
 chmod 777 /cache
 mount -t ext4 /dev/block/mmcblk0p7 /cache
+mkdir /cache/recovery
+chmod 770 /cache/recovery
+chown system.cache /cache/recovery
+
 
 cd /
 eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5)
