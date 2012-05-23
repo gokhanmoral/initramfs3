@@ -42,4 +42,4 @@ touchkey_brightness=3000
 led_fadeout=on
 led_on_touch=on
 cpu_undervolting=0
-smooth_level0=8
+smooth_level0=4
