@@ -39,8 +39,13 @@ then
     chmod 6755 /system/xbin/su
 
     rm -f /system/app/*uper?ser.apk
+    rm -f /system/app/?uper?u.apk
+    rm -f /system/app/*chainfire?supersu*.apk
     rm -f /data/app/*uper?ser.apk
+    rm -f /data/app/?uper?u.apk
+    rm -f /data/app/*chainfire?supersu*.apk
     rm -rf /data/dalvik-cache/*uper?ser.apk*
+    rm -rf /data/dalvik-cache/*chainfire?supersu*.apk*
     xzcat /res/misc/payload/Superuser.apk.xz > /system/app/Superuser.apk
     chown 0.0 /system/app/Superuser.apk
     chmod 644 /system/app/Superuser.apk
