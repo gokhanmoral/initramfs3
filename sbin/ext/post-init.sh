@@ -60,6 +60,9 @@ if [ "$logger" == "on" ];then
 insmod /lib/modules/logger.ko
 fi
 
+# for ntfs automounting
+mount -t tmpfs tmpfs /mnt/ntfs
+
 # disable debugging on some modules
 if [ "$logger" == "off" ];then
   rm -rf /dev/log
