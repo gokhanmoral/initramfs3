@@ -54,9 +54,6 @@ if [ "$logger" == "on" ];then
 insmod /lib/modules/logger.ko
 fi
 
-# for ntfs automounting
-mount -t tmpfs tmpfs /mnt/ntfs
-
 # disable debugging on some modules
 if [ "$logger" == "off" ];then
   rm -rf /dev/log
@@ -75,6 +72,9 @@ fi
 
 # for ntfs automounting
 insmod /lib/modules/fuse.ko
+mkdir /mnt/ntfs
+mount -t tmpfs tmpfs /mnt/ntfs
+chmod 777 /mnt/ntfs
 
 #/sbin/busybox sh /sbin/ext/busybox.sh
 
