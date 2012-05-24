@@ -31,27 +31,21 @@ echo "${cpu_undervolting}" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
 //change cpu step count
 case "${cpustepcount}" in
   5)
-    echo 200000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
     echo 1200 1000 800 500 200 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
     ;;
   6)
-    echo 200000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
     echo 1400 1200 1000 800 500 200 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
     ;;
   7)
-    echo 200000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
     echo 1500 1400 1200 1000 800 500 200 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
     ;;
   8)
-    echo 200000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
     echo 1600 1400 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
     ;;
   9)
-    echo 200000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
     echo 1600 1500 1400 1200 1000 800 500 200 100 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
     ;;
   18)
-    echo 200000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
     echo 1600 1500 1400 1300 1200 1100 1000 900 800 700 600 500 400 300 200 100 50 25 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
     ;;
 esac;
