@@ -1,12 +1,22 @@
 #!/sbin/busybox sh
 if [ "$SUBSYSTEM" == "block" ];
 then
+  ls /data/app/*ntfsmounter* && exit
   mountdir="/mnt/ntfs"
+  if [ -f /system/xbin/ntfs-3g ];then
+    NTFS3GBIN=/system/xbin/ntfs-3g
+  else
+    NTFS3GBIN=`which ntfs-3g`
+    if [ ! -f "$NTFS3GBIN" ];
+    then
+      exit
+    fi
+  fi
   devbase=`basename ${DEVPATH}`
   if [ "$ACTION" == "add" ] && [ ${devbase:0:2} == "sd" ];
   then
     mkdir -p ${mountdir}/${devbase}
-    /system/xbin/ntfs-3g /dev/block/${devbase} ${mountdir}/${devbase} -o ro || rmdir ${mountdir}/${devbase}
+    $NTFS3GBIN /dev/block/${devbase} ${mountdir}/${devbase} -o ro || rmdir ${mountdir}/${devbase}
   fi
   if [ "$ACTION" == "remove" ];
   then
