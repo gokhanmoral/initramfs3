@@ -1,0 +1,41 @@
+#!/system/bin/sh
+
+# vold-set-sdcard -- configure the volume manager daemon for the SD card device
+
+# Usage: vold-set-sdcard /dev/sdcard_block_dev
+# Ensure EXTERNAL_STORAGE is set to SD card mount point (your init.*.rc
+# should already be doing this)
+
+# Note that this script requires that the [ (test) command be available.
+# [ is a shell builtin on Honeycomb and later; on older devices, you will
+# need BusyBox tools or similar available in the PATH.
+
+VOLD_CONFIG_NEW=/dev/vold.fstab
+VOLD_CONFIG=/system/etc/vold.fstab
+
+LVM=/lvm/sbin/lvm
+
+[ -f "$VOLD_CONFIG" ] || exit 0
+
+[ "$1" ] || exit 0
+SDCARD_BLOCK_DEV="$1"
+
+#MAJOR=$(echo $($LVM lvs -o lv_kernel_major --noheadings "$SDCARD_BLOCK_DEV"))
+MINOR=$(echo $($LVM lvs -o lv_kernel_minor --noheadings "$SDCARD_BLOCK_DEV"))
+# XXX we should use readlink instead of this, but it's not available
+SDCARD_SYSFS_PATH="/devices/virtual/block/dm-$MINOR"
+
+umask 022
+: > "$VOLD_CONFIG_NEW"
+exec < "$VOLD_CONFIG"
+while read cmd label mntpoint partition sysfs_path flags; do
+	if [ x"$mntpoint" = x"$EXTERNAL_STORAGE" ]; then
+		sysfs_path="$SDCARD_SYSFS_PATH"
+		partition="auto"
+	fi
+	echo $cmd $label $mntpoint $partition $sysfs_path $flags >> "$VOLD_CONFIG_NEW"
+done
+
+mount -t bind -o bind "$VOLD_CONFIG_NEW" "$VOLD_CONFIG"
+: > /dev/.vold_configured
+exit 0
