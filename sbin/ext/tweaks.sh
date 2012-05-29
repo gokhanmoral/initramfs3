@@ -54,5 +54,5 @@ kmemhelper -n mxt224_data -t char -o 77 46
 
 # my favorite mdnie settings for red and blue
 echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
-echo "135" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb
-echo "120" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr
+echo "132" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb
+echo "122" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr
