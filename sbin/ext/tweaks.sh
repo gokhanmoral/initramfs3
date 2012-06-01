@@ -27,6 +27,7 @@ echo 2000000 > /proc/sys/kernel/sched_wakeup_granularity_ns
 #if  [ -z "`getprop windowsmgr.max_events_per_sec`"  ] || [ "`getprop windowsmgr.max_events_per_sec`" -lt 60 ];then
 #	setprop windowsmgr.max_events_per_sec 60; # smoother GUI
 #fi;
+echo NO_GENTLE_FAIR_SLEEPERS > /sys/kernel/debug/sched_features
 
 sysctl -w kernel.sem="500 512000 100 2048";
 sysctl -w kernel.shmmax=268435456;
