@@ -10,7 +10,7 @@ chmod 777 /data/.siyah
 ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
 if [ "a${ccxmlsum}" != "a`cat /data/.siyah/.ccxmlsum`" ];
 then
-  #rm -f /data/.siyah/*.profile
+  rm -f /data/.siyah/*.profile
   echo ${ccxmlsum} > /data/.siyah/.ccxmlsum
   #force install old superuser on kernel update
   #mount -o remount,rw /system
