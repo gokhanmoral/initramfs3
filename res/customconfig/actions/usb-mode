@@ -1,0 +1,22 @@
+#!/sbin/busybox sh
+
+if [ "a$2" != "a" ];then
+  usb_mode=$2
+
+  case "${usb_mode}" in
+    default) 
+      ;;
+    mass_storage-adb)
+	/system/bin/setprop sys.usb.config mass_storage,adb
+	/system/bin/setprop persist.sys.usb.config mass_storage,adb
+	/system/bin/setprop sys.usb.state mass_storage,adb
+      ;;
+    mtp-adb)
+	/system/bin/setprop sys.usb.config mtp,adb
+	/system/bin/setprop persist.sys.usb.config mtp,adb
+	/system/bin/setprop sys.usb.state mtp,adb
+      ;;
+  esac;
+fi
+
+echo ${usb_mode}

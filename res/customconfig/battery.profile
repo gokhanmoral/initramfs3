@@ -45,3 +45,6 @@ cpu_undervolting=0
 smooth_level0=8
 scaling_max_freq=1000000
 scaling_min_freq=100000
+usb_mode=default
+GENTLE_FAIR_SLEEPERS=off
+ARCH_POWER=on

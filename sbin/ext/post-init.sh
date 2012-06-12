@@ -105,5 +105,7 @@ sleep 30
 /sbin/busybox sh /sbin/ext/run-init-scripts.sh
 )&
 
+#usb mode
+/res/customconfig/actions/usb-mode ${usb_mode}
 #read sync < /data/sync_fifo
 #rm /data/sync_fifo
