@@ -1,0 +1,591 @@
+diff -ruN init.samsung/init.rc init.jelly/init.rc
+--- init.samsung/init.rc	2012-05-21 15:21:24.821842888 +0300
++++ init.jelly/init.rc	2012-07-01 01:00:50.000000000 +0300
+@@ -1,4 +1,17 @@
++# Copyright (C) 2012 The Android Open Source Project
++#
++# IMPORTANT: Do not create world writable files or directories.
++# This is a common source of Android security bugs.
++#
++
++import /init.${ro.hardware}.rc
++import /init.${ro.hardware}.usb.rc
++import /init.trace.rc
++
+ on early-init
++    # Set init and its forked children's oom_adj.
++    write /proc/1/oom_adj -16
++	
+     start ueventd
+ 
+ # create mountpoints
+@@ -22,7 +35,7 @@
+     export ANDROID_DATA /data
+     export ASEC_MOUNTPOINT /mnt/asec
+     export LOOP_MOUNTPOINT /mnt/obb
+-    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar
++    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar
+ 
+ # Disable CFQ slice idle delay
+     write /sys/block/mmcblk0/queue/iosched/slice_idle 0
+@@ -76,25 +89,37 @@
+     write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
+     write /proc/sys/kernel/sched_compat_yield 1
+     write /proc/sys/kernel/sched_child_runs_first 0
++    write /proc/sys/kernel/randomize_va_space 2
++    write /proc/sys/kernel/kptr_restrict 2
++    write /proc/sys/kernel/dmesg_restrict 1
++    write /proc/sys/vm/mmap_min_addr 32768
++    write /proc/sys/kernel/sched_rt_runtime_us 950000
++    write /proc/sys/kernel/sched_rt_period_us 1000000
+ 
+ # Create cgroup mount points for process groups
+     mkdir /dev/cpuctl
+     mount cgroup none /dev/cpuctl cpu
+     chown system system /dev/cpuctl
+     chown system system /dev/cpuctl/tasks
+-    chmod 0777 /dev/cpuctl/tasks
++    chmod 0660 /dev/cpuctl/tasks
+     write /dev/cpuctl/cpu.shares 1024
++    write /dev/cpuctl/cpu.rt_runtime_us 950000
++    write /dev/cpuctl/cpu.rt_period_us 1000000
+ 
+-    mkdir /dev/cpuctl/fg_boost
+-    chown system system /dev/cpuctl/fg_boost/tasks
+-    chmod 0777 /dev/cpuctl/fg_boost/tasks
+-    write /dev/cpuctl/fg_boost/cpu.shares 1024
+-
+-    mkdir /dev/cpuctl/bg_non_interactive
+-    chown system system /dev/cpuctl/bg_non_interactive/tasks
+-    chmod 0777 /dev/cpuctl/bg_non_interactive/tasks
++    mkdir /dev/cpuctl/apps
++    chown system system /dev/cpuctl/apps/tasks
++    chmod 0666 /dev/cpuctl/apps/tasks
++    write /dev/cpuctl/apps/cpu.shares 1024
++    write /dev/cpuctl/apps/cpu.rt_runtime_us 800000
++    write /dev/cpuctl/apps/cpu.rt_period_us 1000000
++
++    mkdir /dev/cpuctl/apps/bg_non_interactive
++    chown system system /dev/cpuctl/apps/bg_non_interactive/tasks
++    chmod 0666 /dev/cpuctl/apps/bg_non_interactive/tasks
+     # 5.0 %
+-    write /dev/cpuctl/bg_non_interactive/cpu.shares 52
++    write /dev/cpuctl/apps/bg_non_interactive/cpu.shares 52
++    write /dev/cpuctl/apps/bg_non_interactive/cpu.rt_runtime_us 700000
++    write /dev/cpuctl/apps/bg_non_interactive/cpu.rt_period_us 1000000
+ 
+ # Allow everybody to read the xt_qtaguid resource tracking misc dev.
+ # This is needed by any process that uses socket tagging.
+@@ -160,11 +185,7 @@
+     chmod 0220 /proc/sysrq-trigger
+ 
+     # create the lost+found directories, so as to enforce our permissions
+-    mkdir /cache/lost+found 0770
+-
+-    # double check the perms, in case lost+found already exists, and set owner
+-    chown root root /cache/lost+found
+-    chmod 0770 /cache/lost+found
++    mkdir /cache/lost+found 0770 root root
+ 
+ on post-fs-data
+     # We chown/chmod /data again so because mount is run as root + defaults
+@@ -217,17 +238,25 @@
+     mkdir /data/misc/wifi 0770 wifi wifi
+     chmod 0770 /data/misc/wifi
+     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
+-    mkdir /data/local 0771 shell shell
++    mkdir /data/local 0751 root root
+     mkdir /data/local/tmp 0771 shell shell
+     mkdir /data/data 0771 system system
+     mkdir /data/app-private 0771 system system
++    mkdir /data/app-asec 0700 root root
+     mkdir /data/app 0771 system system
+     mkdir /data/property 0700 root root
++    mkdir /data/ssh 0750 root shell
++    mkdir /data/ssh/empty 0700 root root
+ 
+     # create dalvik-cache and double-check the perms
+     mkdir /data/dalvik-cache 0771 system system
+     chown system system /data/dalvik-cache
+     chmod 0771 /data/dalvik-cache
++	
++    # create resource-cache and double-check the perms
++    mkdir /data/resource-cache 0771 system system
++    chown system system /data/resource-cache
++    chmod 0771 /data/resource-cache
+ 
+     # create the lost+found directories, so as to enforce our permissions
+     mkdir /data/lost+found 0770
+@@ -237,7 +266,7 @@
+     chmod 0770 /data/lost+found
+ 
+     # create directory for DRM plug-ins
+-    mkdir /data/drm 0774 drm drm
++    mkdir /data/drm 0770 drm drm
+ 
+ 	#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. starts
+ 
+@@ -381,11 +410,12 @@
+ 
+     write /proc/sys/vm/overcommit_memory 1
+     write /proc/sys/vm/min_free_order_shift 4
++    chown root system /sys/module/lowmemorykiller/parameters/adj
++    chmod 0664 /sys/module/lowmemorykiller/parameters/adj
++    chown root system /sys/module/lowmemorykiller/parameters/minfree
++    chmod 0664 /sys/module/lowmemorykiller/parameters/minfree
+     write /sys/module/lowmemorykiller/parameters/minfree 8192,10240,12288,14336,16384,20480
+ 
+-    # Set init its forked children's oom_adj.
+-    write /proc/1/oom_adj -16
+-
+     # Tweak background writeout
+     write /proc/sys/vm/dirty_expire_centisecs 200
+     write /proc/sys/vm/dirty_background_ratio  5
+@@ -431,12 +461,33 @@
+     chown radio system /sys/android_power/acquire_full_wake_lock
+     chown radio system /sys/android_power/acquire_partial_wake_lock
+     chown radio system /sys/android_power/release_wake_lock
+-    chown radio system /sys/power/state
++    chown system system /sys/power/state
++    chown system system /sys/power/wakeup_count
+     chown radio system /sys/power/wake_lock
+     chown radio system /sys/power/wake_unlock
+     chmod 0660 /sys/power/state
+     chmod 0660 /sys/power/wake_lock
+     chmod 0660 /sys/power/wake_unlock
++	
++    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_rate
++    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/timer_rate
++    chown system system /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
++    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
++    chown system system /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
++    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
++    chown system system /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
++    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
++    chown system system /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
++    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
++    chown system system /sys/devices/system/cpu/cpufreq/interactive/boost
++    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/boost
++    chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse
++    chown system system /sys/devices/system/cpu/cpufreq/interactive/input_boost
++    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/input_boost
++
++    # Assume SMP uses shared cpufreq policy for all CPUs
++    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
++    chmod 0660 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+ 
+     chown system system /sys/class/timed_output/vibrator/enable
+     chown system system /sys/class/leds/keyboard-backlight/brightness
+@@ -557,11 +608,11 @@
+ 
+ # Define TCP buffer sizes for various networks
+ #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
+-    setprop net.tcp.buffersize.default 4096,87380,704512,4096,16384,110208
++    setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
+     setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
+     setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
+-    setprop net.tcp.buffersize.umts    4094,87380,563200,4096,16384,110208
+-    setprop net.tcp.buffersize.hspa    4094,87380,704512,4096,16384,262144
++    setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
++    setprop net.tcp.buffersize.hspa    4094,87380,262144,4096,16384,262144
+     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
+     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
+ 
+@@ -677,6 +728,7 @@
+     class core
+     console
+     disabled
++	usershell
+     group log
+ 
+ on property:ro.debuggable=1
+@@ -710,6 +762,8 @@
+     critical
+     onrestart restart zygote
+     onrestart restart media
++    onrestart restart surfaceflinger
++    onrestart restart drm
+ 
+ service vold /system/bin/vold
+     class core
+@@ -721,6 +775,7 @@
+     class main
+     socket netd stream 0660 root system
+     socket dnsproxyd stream 0660 root inet
++    socket mdns stream 0660 root system
+ 
+ service debuggerd /system/bin/debuggerd
+     class main
+@@ -750,7 +805,7 @@
+ 
+ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
+     class main
+-    socket zygote stream 666
++    socket zygote stream 660 root system
+     onrestart write /sys/android_power/request_state wake
+     onrestart write /sys/power/state on
+     onrestart restart media
+@@ -759,12 +814,12 @@
+ service drm /system/bin/drmserver
+     class main
+     user drm
+-    group system inet sdcard_rw media_rw radio
++    group drm system inet drmrpc sdcard_r
+ 
+ service media /system/bin/mediaserver
+     class main
+     user media
+-    group system audio camera inet net_bt net_bt_admin
++    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc
+     ioprio rt 4
+ 
+ service samsungani /sbin/bootanimation.sh
+@@ -840,14 +895,14 @@
+     class main
+     socket mtpd stream 600 system system
+     user vpn
+-    group vpn net_admin net_raw
++    group vpn net_admin inet net_raw
+     disabled
+     oneshot
+ 
+ service keystore /system/bin/keystore /data/misc/keystore
+     class main
+     user keystore
+-    group keystore
++    group keystore drmrpc
+     socket keystore stream 666
+ 
+ service dumpstate /system/bin/dumpstate -s
+@@ -855,6 +910,18 @@
+     socket dumpstate stream 0660 shell log
+     disabled
+     oneshot
++	
++service sshd /system/bin/start-ssh
++    class main
++    disabled
++
++service mdnsd /system/bin/mdnsd
++    class main
++    user mdnsr
++    group inet net_raw
++    socket mdnsd stream 0660 mdnsr inet
++    disabled
++    oneshot
+ 
+ #for WiFi MFG(TestMode)
+ service mfgloader /system/bin/mfgloader
+diff -ruN init.samsung/init.rc.2 init.jelly/init.rc.2
+--- init.samsung/init.rc.2	2012-05-21 15:35:42.000000000 +0300
++++ init.jelly/init.rc.2	2012-07-01 01:01:03.000000000 +0300
+@@ -1,4 +1,17 @@
++# Copyright (C) 2012 The Android Open Source Project
++#
++# IMPORTANT: Do not create world writable files or directories.
++# This is a common source of Android security bugs.
++#
++
++import /init.${ro.hardware}.rc
++import /init.${ro.hardware}.usb.rc
++import /init.trace.rc
++
+ on early-init
++    # Set init and its forked children's oom_adj.
++    write /proc/1/oom_adj -16
++	
+     start ueventd
+ 
+ # create mountpoints
+@@ -22,7 +35,7 @@
+     export ANDROID_DATA /data
+     export ASEC_MOUNTPOINT /mnt/asec
+     export LOOP_MOUNTPOINT /mnt/obb
+-    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar
++    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar
+ 
+ # Disable CFQ slice idle delay
+     write /sys/block/mmcblk0/queue/iosched/slice_idle 0
+@@ -76,25 +89,37 @@
+     write /proc/sys/kernel/sched_wakeup_granularity_ns 2000000
+     write /proc/sys/kernel/sched_compat_yield 1
+     write /proc/sys/kernel/sched_child_runs_first 0
++    write /proc/sys/kernel/randomize_va_space 2
++    write /proc/sys/kernel/kptr_restrict 2
++    write /proc/sys/kernel/dmesg_restrict 1
++    write /proc/sys/vm/mmap_min_addr 32768
++    write /proc/sys/kernel/sched_rt_runtime_us 950000
++    write /proc/sys/kernel/sched_rt_period_us 1000000
+ 
+ # Create cgroup mount points for process groups
+     mkdir /dev/cpuctl
+     mount cgroup none /dev/cpuctl cpu
+     chown system system /dev/cpuctl
+     chown system system /dev/cpuctl/tasks
+-    chmod 0777 /dev/cpuctl/tasks
++    chmod 0660 /dev/cpuctl/tasks
+     write /dev/cpuctl/cpu.shares 1024
++    write /dev/cpuctl/cpu.rt_runtime_us 950000
++    write /dev/cpuctl/cpu.rt_period_us 1000000
+ 
+-    mkdir /dev/cpuctl/fg_boost
+-    chown system system /dev/cpuctl/fg_boost/tasks
+-    chmod 0777 /dev/cpuctl/fg_boost/tasks
+-    write /dev/cpuctl/fg_boost/cpu.shares 1024
+-
+-    mkdir /dev/cpuctl/bg_non_interactive
+-    chown system system /dev/cpuctl/bg_non_interactive/tasks
+-    chmod 0777 /dev/cpuctl/bg_non_interactive/tasks
++    mkdir /dev/cpuctl/apps
++    chown system system /dev/cpuctl/apps/tasks
++    chmod 0666 /dev/cpuctl/apps/tasks
++    write /dev/cpuctl/apps/cpu.shares 1024
++    write /dev/cpuctl/apps/cpu.rt_runtime_us 800000
++    write /dev/cpuctl/apps/cpu.rt_period_us 1000000
++
++    mkdir /dev/cpuctl/apps/bg_non_interactive
++    chown system system /dev/cpuctl/apps/bg_non_interactive/tasks
++    chmod 0666 /dev/cpuctl/apps/bg_non_interactive/tasks
+     # 5.0 %
+-    write /dev/cpuctl/bg_non_interactive/cpu.shares 52
++    write /dev/cpuctl/apps/bg_non_interactive/cpu.shares 52
++    write /dev/cpuctl/apps/bg_non_interactive/cpu.rt_runtime_us 700000
++    write /dev/cpuctl/apps/bg_non_interactive/cpu.rt_period_us 1000000
+ 
+ # Allow everybody to read the xt_qtaguid resource tracking misc dev.
+ # This is needed by any process that uses socket tagging.
+@@ -162,11 +187,7 @@
+     chmod 0220 /proc/sysrq-trigger
+ 
+     # create the lost+found directories, so as to enforce our permissions
+-    mkdir /cache/lost+found 0770
+-
+-    # double check the perms, in case lost+found already exists, and set owner
+-    chown root root /cache/lost+found
+-    chmod 0770 /cache/lost+found
++    mkdir /cache/lost+found 0770 root root
+ 
+ on post-fs-data
+     # We chown/chmod /data again so because mount is run as root + defaults
+@@ -219,17 +240,25 @@
+     mkdir /data/misc/wifi 0770 wifi wifi
+     chmod 0770 /data/misc/wifi
+     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
+-    mkdir /data/local 0771 shell shell
++    mkdir /data/local 0751 root root
+     mkdir /data/local/tmp 0771 shell shell
+     mkdir /data/data 0771 system system
+     mkdir /data/app-private 0771 system system
++    mkdir /data/app-asec 0700 root root
+     mkdir /data/app 0771 system system
+     mkdir /data/property 0700 root root
++    mkdir /data/ssh 0750 root shell
++    mkdir /data/ssh/empty 0700 root root
+ 
+     # create dalvik-cache and double-check the perms
+     mkdir /data/dalvik-cache 0771 system system
+     chown system system /data/dalvik-cache
+     chmod 0771 /data/dalvik-cache
++	
++    # create resource-cache and double-check the perms
++    mkdir /data/resource-cache 0771 system system
++    chown system system /data/resource-cache
++    chmod 0771 /data/resource-cache
+ 
+     # create the lost+found directories, so as to enforce our permissions
+     mkdir /data/lost+found 0770
+@@ -239,7 +268,7 @@
+     chmod 0770 /data/lost+found
+ 
+     # create directory for DRM plug-ins
+-    mkdir /data/drm 0774 drm drm
++    mkdir /data/drm 0770 drm drm
+ 
+ 	#Code changes for GB-> ICS upgrade for U1/T1 models ...Moving .db file .. starts
+ 
+@@ -383,11 +412,12 @@
+ 
+     write /proc/sys/vm/overcommit_memory 1
+     write /proc/sys/vm/min_free_order_shift 4
++    chown root system /sys/module/lowmemorykiller/parameters/adj
++    chmod 0664 /sys/module/lowmemorykiller/parameters/adj
++    chown root system /sys/module/lowmemorykiller/parameters/minfree
++    chmod 0664 /sys/module/lowmemorykiller/parameters/minfree
+     write /sys/module/lowmemorykiller/parameters/minfree 8192,10240,12288,14336,16384,20480
+ 
+-    # Set init its forked children's oom_adj.
+-    write /proc/1/oom_adj -16
+-
+     # Tweak background writeout
+     write /proc/sys/vm/dirty_expire_centisecs 200
+     write /proc/sys/vm/dirty_background_ratio  5
+@@ -433,12 +463,33 @@
+     chown radio system /sys/android_power/acquire_full_wake_lock
+     chown radio system /sys/android_power/acquire_partial_wake_lock
+     chown radio system /sys/android_power/release_wake_lock
+-    chown radio system /sys/power/state
++    chown system system /sys/power/state
++    chown system system /sys/power/wakeup_count
+     chown radio system /sys/power/wake_lock
+     chown radio system /sys/power/wake_unlock
+     chmod 0660 /sys/power/state
+     chmod 0660 /sys/power/wake_lock
+     chmod 0660 /sys/power/wake_unlock
++	
++    chown system system /sys/devices/system/cpu/cpufreq/interactive/timer_rate
++    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/timer_rate
++    chown system system /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
++    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
++    chown system system /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
++    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
++    chown system system /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
++    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
++    chown system system /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
++    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
++    chown system system /sys/devices/system/cpu/cpufreq/interactive/boost
++    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/boost
++    chown system system /sys/devices/system/cpu/cpufreq/interactive/boostpulse
++    chown system system /sys/devices/system/cpu/cpufreq/interactive/input_boost
++    chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/input_boost
++
++    # Assume SMP uses shared cpufreq policy for all CPUs
++    chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
++    chmod 0660 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+ 
+     chown system system /sys/class/timed_output/vibrator/enable
+     chown system system /sys/class/leds/keyboard-backlight/brightness
+@@ -559,11 +610,11 @@
+ 
+ # Define TCP buffer sizes for various networks
+ #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
+-    setprop net.tcp.buffersize.default 4096,87380,704512,4096,16384,110208
++    setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
+     setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
+     setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
+-    setprop net.tcp.buffersize.umts    4094,87380,563200,4096,16384,110208
+-    setprop net.tcp.buffersize.hspa    4094,87380,704512,4096,16384,262144
++    setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
++    setprop net.tcp.buffersize.hspa    4094,87380,262144,4096,16384,262144
+     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
+     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
+ 
+@@ -679,6 +730,7 @@
+     class core
+     console
+     disabled
++	usershell
+     group log
+ 
+ on property:ro.debuggable=1
+@@ -712,6 +764,8 @@
+     critical
+     onrestart restart zygote
+     onrestart restart media
++    onrestart restart surfaceflinger
++    onrestart restart drm
+ 
+ service vold /system/bin/vold
+     class core
+@@ -723,6 +777,7 @@
+     class main
+     socket netd stream 0660 root system
+     socket dnsproxyd stream 0660 root inet
++    socket mdns stream 0660 root system
+ 
+ service debuggerd /system/bin/debuggerd
+     class main
+@@ -752,7 +807,7 @@
+ 
+ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
+     class main
+-    socket zygote stream 666
++    socket zygote stream 660 root system
+     onrestart write /sys/android_power/request_state wake
+     onrestart write /sys/power/state on
+     onrestart restart media
+@@ -761,12 +816,12 @@
+ service drm /system/bin/drmserver
+     class main
+     user drm
+-    group system inet sdcard_rw media_rw radio
++    group drm system inet drmrpc sdcard_r
+ 
+ service media /system/bin/mediaserver
+     class main
+     user media
+-    group system audio camera inet net_bt net_bt_admin
++    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc
+     ioprio rt 4
+ 
+ service samsungani /sbin/bootanimation.sh
+@@ -842,14 +897,14 @@
+     class main
+     socket mtpd stream 600 system system
+     user vpn
+-    group vpn net_admin net_raw
++    group vpn net_admin inet net_raw
+     disabled
+     oneshot
+ 
+ service keystore /system/bin/keystore /data/misc/keystore
+     class main
+     user keystore
+-    group keystore
++    group keystore drmrpc
+     socket keystore stream 666
+ 
+ service dumpstate /system/bin/dumpstate -s
+@@ -857,6 +912,18 @@
+     socket dumpstate stream 0660 shell log
+     disabled
+     oneshot
++	
++service sshd /system/bin/start-ssh
++    class main
++    disabled
++
++service mdnsd /system/bin/mdnsd
++    class main
++    user mdnsr
++    group inet net_raw
++    socket mdnsd stream 0660 mdnsr inet
++    disabled
++    oneshot
+ 
+ #for WiFi MFG(TestMode)
+ service mfgloader /system/bin/mfgloader
+diff -ruN init.samsung/init.trace.rc init.jelly/init.trace.rc
+--- init.samsung/init.trace.rc	1970-01-01 02:00:00.000000000 +0200
++++ init.jelly/init.trace.rc	2012-06-28 01:38:42.000000000 +0300
+@@ -0,0 +1,31 @@
++## Permissions to allow system-wide tracing to the kernel trace buffer.
++##
++on boot
++
++# Allow writing to the kernel trace log.
++    chmod 0222 /sys/kernel/debug/tracing/trace_marker
++
++# Allow the shell group to enable (some) kernel tracing.
++    chown root shell /sys/kernel/debug/tracing/trace_clock
++    chown root shell /sys/kernel/debug/tracing/buffer_size_kb
++    chown root shell /sys/kernel/debug/tracing/options/overwrite
++    chown root shell /sys/kernel/debug/tracing/events/sched/sched_switch/enable
++    chown root shell /sys/kernel/debug/tracing/events/sched/sched_wakeup/enable
++    chown root shell /sys/kernel/debug/tracing/events/power/cpu_frequency/enable
++    chown root shell /sys/kernel/debug/tracing/events/power/cpu_idle/enable
++    chown root shell /sys/kernel/debug/tracing/events/cpufreq_interactive/enable
++    chown root shell /sys/kernel/debug/tracing/tracing_on
++
++    chmod 0664 /sys/kernel/debug/tracing/trace_clock
++    chmod 0664 /sys/kernel/debug/tracing/buffer_size_kb
++    chmod 0664 /sys/kernel/debug/tracing/options/overwrite
++    chmod 0664 /sys/kernel/debug/tracing/events/sched/sched_switch/enable
++    chmod 0664 /sys/kernel/debug/tracing/events/sched/sched_wakeup/enable
++    chmod 0664 /sys/kernel/debug/tracing/events/power/cpu_frequency/enable
++    chmod 0664 /sys/kernel/debug/tracing/events/power/cpu_idle/enable
++    chmod 0664 /sys/kernel/debug/tracing/events/cpufreq_interactive/enable
++    chmod 0664 /sys/kernel/debug/tracing/tracing_on
++
++# Allow only the shell group to read and truncate the kernel trace.
++    chown root shell /sys/kernel/debug/tracing/trace
++    chmod 0660 /sys/kernel/debug/tracing/trace

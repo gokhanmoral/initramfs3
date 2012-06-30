@@ -52,6 +52,7 @@ fi;
 AOSP=0
 MIUI=0
 B2G=0
+JELLY=0
 
 [ -d /system/b2g ] && B2G=1
 [ -f /system/framework/framework2.jar ] || AOSP=1
@@ -66,8 +67,12 @@ B2G=0
 [ "`/sbin/busybox grep -i Oxygen /system/build.prop`" ] && AOSP=1
 [ "`/sbin/busybox grep -i =MIUI /system/build.prop`" ] && MIUI=1
 [ -f /system/framework/framework-miui.jar ] && MIUI=1
+[ -f /system/lib/ssl/engines/libkeystore.so ] && JELLY=1
 
-
+if [ "$JELLY" == 1 ];
+then
+patch -p1 < /res/misc/jelly.patch
+else
 if [ "$B2G" == 1 ];
 then
 patch -p1 < /res/misc/b2g.patch
@@ -88,6 +93,7 @@ fi;
 if [ "$MIUI" == 1 ];
 then
 patch -p1 < /res/misc/miui.patch
+fi
 fi
 
 if [ "$SECONDROM" == "1" ];then
