@@ -2,35 +2,18 @@
 # thanks to hardcore and nexxx
 # some parameters are taken from http://forum.xda-developers.com/showthread.php?t=1292743 (highly recommended to read)
 
-#thanks to pikachu01@XDA
-/sbin/busybox sh /sbin/ext/thunderbolt.sh
-mount -o noatime,remount,rw,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /cache /cache;
-mount -o noatime,remount,rw,discard,barrier=0,commit=60,noauto_da_alloc,delalloc /data /data;
+#thanks to pikachu01@XDA for thunderbolt scripts and remounts
+#/sbin/busybox sh /sbin/ext/thunderbolt.sh
+# Remount all partitions with noatime
+for k in $(busybox mount | grep relatime | cut -d " " -f3);
+do
+#sync;
+busybox mount -o remount,noatime $k;
+done;
+mount -o noatime,remount,discard,barrier=0,commit=60,journal_async_commit,noauto_da_alloc,delalloc /system
+mount -o noatime,remount,rw,discard,barrier=0,commit=60,journal_async_commit,noauto_da_alloc,delalloc /cache
+mount -o noatime,remount,rw,discard,barrier=0,commit=60,journal_async_commit,noauto_da_alloc,delalloc /data
 
-echo 8192 > /proc/sys/vm/min_free_kbytes
-echo 0 > /proc/sys/vm/swappiness
-echo 90 > /proc/sys/vm/dirty_ratio
-echo 40 > /proc/sys/vm/dirty_background_ratio
-echo 20 > /proc/sys/vm/vfs_cache_pressure
-echo 2000 > /proc/sys/vm/dirty_writeback_centisecs
-echo 200 > /proc/sys/vm/dirty_expire_centisecs
-
-echo 10000000 > /proc/sys/kernel/sched_latency_ns 
-echo 2000000 > /proc/sys/kernel/sched_wakeup_granularity_ns
-
-# the following tweaks are commented and left here as an example for those who want to enable them
-#setprop ro.telephony.call_ring.delay 1000; # let's minimize the time Android waits until it rings on a call
-#if [ "`getprop dalvik.vm.heapsize | sed 's/m//g'`" -lt 64 ];then
-#	setprop dalvik.vm.heapsize 64m; # leave that setting to cyanogenmod settings or uncomment it if needed
-#fi;
-#setprop wifi.supplicant_scan_interval 120; # higher is not recommended, scans while not connected anyway so shouldn't affect while connected
-#if  [ -z "`getprop windowsmgr.max_events_per_sec`"  ] || [ "`getprop windowsmgr.max_events_per_sec`" -lt 60 ];then
-#	setprop windowsmgr.max_events_per_sec 60; # smoother GUI
-#fi;
-
-sysctl -w kernel.sem="500 512000 100 2048";
-sysctl -w kernel.shmmax=268435456;
-sysctl -w kernel.msgmni=1024;
 
 # touch sensitivity settings.
 (

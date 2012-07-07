@@ -10,12 +10,8 @@ chmod 777 /data/.siyah
 ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
 if [ "a${ccxmlsum}" != "a`cat /data/.siyah/.ccxmlsum`" ];
 then
-  rm -f /data/.siyah/*.profile
+#  rm -f /data/.siyah/*.profile
   echo ${ccxmlsum} > /data/.siyah/.ccxmlsum
-  #force install old superuser on kernel update
-  #mount -o remount,rw /system
-  #rm -f /system/xbin/su
-  #mount -o remount,ro /system
 fi
 [ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah
 [ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah
@@ -25,10 +21,10 @@ fi
 read_defaults
 read_config
 
-//cpu undervolting
+#cpu undervolting
 echo "${cpu_undervolting}" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
 
-//change cpu step count
+#change cpu step count
 case "${cpustepcount}" in
   5)
     echo 1200 1000 800 500 200 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
@@ -61,8 +57,6 @@ if [ "$logger" == "off" ];then
   echo 0 > /sys/module/mali/parameters/mali_debug_level
   echo 0 > /sys/module/kernel/parameters/initcall_debug
   echo 0 > /sys//module/lowmemorykiller/parameters/debug_level
-  echo 0 > /sys/module/wakelock/parameters/debug_mask
-  echo 0 > /sys/module/userwakelock/parameters/debug_mask
   echo 0 > /sys/module/earlysuspend/parameters/debug_mask
   echo 0 > /sys/module/alarm/parameters/debug_mask
   echo 0 > /sys/module/alarm_dev/parameters/debug_mask
