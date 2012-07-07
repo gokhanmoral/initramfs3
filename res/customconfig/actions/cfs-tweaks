@@ -1,0 +1,29 @@
+#!/sbin/busybox sh
+
+if [ "a$2" != "a" ];then
+  cfs_tweaks=$2
+fi
+
+mount -o remount,rw /
+
+case "${cfs_tweaks}" in
+  0)
+    sysctl -w kernel.sched_min_granularity_ns=750000 > /dev/null
+    sysctl -w kernel.sched_latency_ns=10000000 > /dev/null
+    sysctl -w kernel.sched_wakeup_granularity_ns=2000000 > /dev/null
+    ;;
+  1)
+    sysctl -w kernel.sched_min_granularity_ns=750000 > /dev/null
+    sysctl -w kernel.sched_latency_ns=6000000 > /dev/null
+    sysctl -w kernel.sched_wakeup_granularity_ns=1000000 > /dev/null
+    ;;
+  2)
+    sysctl -w kernel.sched_min_granularity_ns=200000 > /dev/null
+    sysctl -w kernel.sched_latency_ns=400000 > /dev/null
+    sysctl -w kernel.sched_wakeup_granularity_ns=100000 > /dev/null
+    ;;
+esac;
+
+mount -o remount,ro /
+
+echo $cfs_tweaks

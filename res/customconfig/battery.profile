@@ -50,3 +50,4 @@ GENTLE_FAIR_SLEEPERS=off
 ARCH_POWER=on
 default_stats=off
 mdnie_shortcut_enabled=on
+cfs_tweaks=1

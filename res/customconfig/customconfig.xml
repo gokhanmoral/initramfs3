@@ -11,6 +11,11 @@
              <spinnerItem name="Second core always-off" value="always-off"/> 
              <spinnerItem name="Second core always-on" value="always-on"/> 
        </spinner>
+      <spinner description="Changes CFS granularity and latency settings. Using anything other than stock may decrease benchmark scores but will increase UI responsiveness" name="CFS Tweaks" action="cfs-tweaks">
+             <spinnerItem name="Samsung defaults" value="0"/> 
+             <spinnerItem name="Linux kernel defaults" value="1"/> 
+             <spinnerItem name="Thunderbolt script defaults" value="2"/> 
+      </spinner>
     </settingsPane>
 
     <settingsPane description="" 
@@ -27,13 +32,17 @@
              <spinnerItem name="1000MHz" value="6"/> 
              <spinnerItem name="800MHz" value="8"/> 
       </spinner>
+       <spinner description="Sets the number of CPUs to be used in hotplugging (only for PegasusQ)" name="Max CPU Lock" action="generic /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock">
+             <spinnerItem name="Dual core mode" value="2"/> 
+             <spinnerItem name="Single core mode" value="1"/> 
+       </spinner>
       <seekBar description="Sets the sched_mc value which changes the cpu scheduler behaviour for multi-cpu systems. 0 is Samsung kernel's default value which turns sched_mc off. Setting it to 1 means that the first core will be tried to be loaded more and setting it to 2 will bias task wake-ups to semi-idle cpu package for power savings. (default: 0)"
             name="sched_mc" action="generic /sys/devices/system/cpu/sched_mc_power_savings" unit="" min="0" reversed="false" step="1" max="2"/>
     </settingsPane>
 
     <settingsPane description=""
 		name="CPU Undervolting">
-      <spinner description="Sets the CPU undervolting value which will be apploed during boot time only. It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overriden by those." name="CPU Undervolting" action="generic /tmp/cpu_undervolting">
+      <spinner description="Sets the CPU undervolting value which will be applied during boot time only. It will not have any effect until you restart your device. Remember: if you change this value and your device doesn't boot you will have to reset extweaks settings using CWM recovery. This value will be applied to all CPU steps before any script or app execution. If you use any script or voltage control app this setting may be overriden by those." name="CPU Undervolting" action="generic /tmp/cpu_undervolting">
              <spinnerItem name="No Undervolting" value="0"/> 
              <spinnerItem name=" -25 mV" value="-25"/> 
              <spinnerItem name=" -50 mV" value="-50"/> 
