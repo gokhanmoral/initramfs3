@@ -48,3 +48,5 @@ scaling_min_freq=200000
 usb_mode=default
 GENTLE_FAIR_SLEEPERS=off
 ARCH_POWER=on
+default_stats=0
+mdnie_shortcut_enabled=1

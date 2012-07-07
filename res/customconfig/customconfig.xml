@@ -149,6 +149,10 @@
 		name="Gamma Shift" action="generic /sys/devices/platform/samsung-pd.2/s3cfb.0/spi_gpio.3/spi_master/spi3/spi3.0/lcd/panel/user_gamma_adjust" unit="" min="-50" reversed="false" step="5" max="50"/>
        <seekBar description="Vibration intensity level (default 6)" 
 		name="Vibration Intensity" action="generic /sys/devices/platform/tspdrv/vibrator_level" unit="" min="0" reversed="false" step="1" max="6"/>
+       <spinner description="Enable inverting the screen colors by quickly pressing Home 4 times" name="mDNIe Shortcut" action="generic /sys/module/gpio_keys/parameters/mdnie_shortcut_enabled">
+             <spinnerItem name="Enable (default)" value="1"/> 
+             <spinnerItem name="Disable" value="0"/> 
+       </spinner>
     </settingsPane>
   </settingsTab>
   <settingsTab name="BLN">
@@ -213,6 +217,10 @@
              <spinnerItem name="Default" value="default"/> 
              <spinnerItem name="Force Mass Storage Mode" value="mass_storage-adb"/> 
              <spinnerItem name="Force MTP Mode" value="mtp-adb"/> 
+      </spinner>
+      <spinner description="Type of wakelock statistics to report (both are collected and kept up to date)." name="Wakelock Stats Type" action="generic /sys/module/wakelock/parameters/default_stats">
+             <spinnerItem name="Full (default)" value="0"/> 
+             <spinnerItem name="Exclusive (non-overlapping)" value="1"/> 
       </spinner>
       <button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for those period, then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
     </settingsPane>
