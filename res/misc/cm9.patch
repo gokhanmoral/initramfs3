@@ -9,7 +9,7 @@ diff -ruN init.samsung/default.prop init.cm9/default.prop
 +persist.sys.vold.switchexternal=1
 +persist.sys.usb.config=mass_storage,adb
 diff -ruN init.samsung/init.rc init.cm9/init.rc
---- init.samsung/init.rc	2012-05-21 15:21:24.821842888 +0300
+--- init.samsung/init.rc	2012-07-08 15:44:20.781792634 +0300
 +++ init.cm9/init.rc	2012-05-21 15:22:46.301844389 +0300
 @@ -1,13 +1,13 @@
  on early-init
