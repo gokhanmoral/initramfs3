@@ -100,6 +100,10 @@ loglevel 3
 # This is needed by any process that uses socket tagging.
     chmod 0644 /dev/xt_qtaguid
 
+# ko files for exfat
+    insmod /lib/modules/exfat_core.ko
+    insmod /lib/modules/exfat_fs.ko
+
 # ko files for FM Radio
     insmod /lib/modules/Si4709_driver.ko
 
