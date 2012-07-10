@@ -229,7 +229,7 @@
              <spinnerItem name="Force Mass Storage Mode" value="mass_storage-adb"/> 
              <spinnerItem name="Force MTP Mode" value="mtp-adb"/> 
       </spinner>
-      <checkbox description="If checked, BetterBatteryStatus will report exclusive (non-overlapping) deleted wakelock statistics." name="Exclusive Wakelock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Exclusive Wakelock Stats"/>
+      <checkbox description="If checked, BetterBatteryStatus will report exclusive (non-overlapping) wakelock statistics." name="Exclusive Wakelock Stats" action="generic01 /sys/module/wakelock/parameters/default_stats" label="Exclusive Wakelock Stats"/>
       <button description="If you think that the fuel gauge chip is behaving weird use this button to reset it. Give it a few hours after you reset the gauge. It may still show you funny values for those period, then the battery percentage should be fine." name="Reset Fuel-Gauge Chip" action="reset-fuelgauge" label="Reset Fuel-Gauge Chip"/>
     </settingsPane>
     <settingsPane description="Removing/Reinstalling root to support some apps which requires you not to have a rooted phone." name="Remove/Reinstall Root">
