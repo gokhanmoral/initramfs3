@@ -1,0 +1,45 @@
+#!/sbin/busybox sh
+
+if [ "a$2" == "a" ];then
+echo $soundgasm_hp
+exit
+fi
+
+soundgasm_hp=$2
+
+case "$soundgasm_hp" in
+  0)
+    kmemhelper -t short -n mc1n2_vol_hpgain -o 0 0
+    kmemhelper -t short -n mc1n2_vol_hpgain -o 2 0
+    kmemhelper -t short -n mc1n2_vol_hpgain -o 4 0
+    kmemhelper -t short -n mc1n2_vol_hpgain -o 6 0
+    echo 1e 1 > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg
+    echo 1e 0 > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg
+    ;;
+  1)
+    kmemhelper -t short -n mc1n2_vol_hpgain -o 0 384
+    kmemhelper -t short -n mc1n2_vol_hpgain -o 2 384
+    kmemhelper -t short -n mc1n2_vol_hpgain -o 4 384
+    kmemhelper -t short -n mc1n2_vol_hpgain -o 6 384
+    echo 1e 1 > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg
+    echo 1e 0 > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg
+    ;;
+  2)
+    kmemhelper -t short -n mc1n2_vol_hpgain -o 0 768
+    kmemhelper -t short -n mc1n2_vol_hpgain -o 2 768
+    kmemhelper -t short -n mc1n2_vol_hpgain -o 4 768
+    kmemhelper -t short -n mc1n2_vol_hpgain -o 6 768
+    echo 1e 1 > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg
+    echo 1e 0 > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg
+    ;;
+  3)
+    kmemhelper -t short -n mc1n2_vol_hpgain -o 0 1536
+    kmemhelper -t short -n mc1n2_vol_hpgain -o 2 1536
+    kmemhelper -t short -n mc1n2_vol_hpgain -o 4 1536
+    kmemhelper -t short -n mc1n2_vol_hpgain -o 6 1536
+    echo 1e 1 > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg
+    echo 1e 0 > /sys/kernel/debug/asoc/U1-YMU823/mc1n2.6-003a/codec_reg
+    ;;
+esac;
+ 
+echo $soundgasm_hp

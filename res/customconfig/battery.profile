@@ -51,3 +51,4 @@ ARCH_POWER=on
 default_stats=off
 mdnie_shortcut_enabled=on
 cfs_tweaks=1
+soundgasm_hp=0
