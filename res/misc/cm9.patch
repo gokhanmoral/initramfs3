@@ -9,8 +9,8 @@ diff -ruN init.samsung/default.prop init.cm9/default.prop
 +persist.sys.vold.switchexternal=1
 +persist.sys.usb.config=mass_storage,adb
 diff -ruN init.samsung/init.rc init.cm9/init.rc
---- init.samsung/init.rc	2012-05-21 15:21:24.821842888 +0300
-+++ init.cm9/init.rc	2012-05-21 15:22:46.301844389 +0300
+--- init.samsung/init.rc	2012-07-08 15:44:20.781792634 +0300
++++ init.cm9/init.rc	2012-07-18 23:50:21.000000000 +0300
 @@ -1,13 +1,13 @@
  on early-init
 +    # Set init and its forked children's oom_adj.
@@ -188,7 +188,7 @@ diff -ruN init.samsung/init.rc init.cm9/init.rc
      # create basic filesystem structure
      mkdir /data/misc 01771 system misc
      mkdir /data/misc/bluetoothd 0770 bluetooth bluetooth
-@@ -211,74 +156,36 @@
+@@ -211,74 +156,37 @@
      mkdir /data/misc/keychain 0771 system system
      mkdir /data/misc/vpn 0770 system vpn
      mkdir /data/misc/systemkeys 0700 system system
@@ -205,6 +205,7 @@ diff -ruN init.samsung/init.rc init.cm9/init.rc
      mkdir /data/app-private 0771 system system
      mkdir /data/app 0771 system system
      mkdir /data/property 0700 root root
++    mkdir /data/radio 0770 radio radio
  
 -    # create dalvik-cache and double-check the perms
 +    # create dalvik-cache and double-check the perms, so as to enforce our permissions
@@ -278,7 +279,7 @@ diff -ruN init.samsung/init.rc init.cm9/init.rc
  
      # If there is no fs-post-data action in the init.<device>.rc file, you
      # must uncomment this line, otherwise encrypted filesystems
-@@ -286,46 +193,13 @@
+@@ -286,46 +194,13 @@
      # Set indication (checked by vold) that we have finished this action
      #setprop vold.post_fs_data_done 1
  
@@ -327,7 +328,7 @@ diff -ruN init.samsung/init.rc init.cm9/init.rc
  
  on boot
  # basic network init
-@@ -336,95 +210,20 @@
+@@ -336,95 +211,20 @@
  # set RLIMIT_NICE to allow priorities from 19 to -20
      setrlimit 13 40 40
  
@@ -430,7 +431,7 @@ diff -ruN init.samsung/init.rc init.cm9/init.rc
      # Permissions for System Server and daemons.
      chown radio system /sys/android_power/state
      chown radio system /sys/android_power/request_state
-@@ -437,11 +236,9 @@
+@@ -437,11 +237,9 @@
      chmod 0660 /sys/power/state
      chmod 0660 /sys/power/wake_lock
      chmod 0660 /sys/power/wake_unlock
@@ -442,7 +443,7 @@ diff -ruN init.samsung/init.rc init.cm9/init.rc
      chown system system /sys/class/leds/button-backlight/brightness
      chown system system /sys/class/leds/jogball-backlight/brightness
      chown system system /sys/class/leds/red/brightness
-@@ -464,96 +261,15 @@
+@@ -464,96 +262,15 @@
      chown system system /sys/kernel/ipv4/tcp_rmem_min
      chown system system /sys/kernel/ipv4/tcp_rmem_def
      chown system system /sys/kernel/ipv4/tcp_rmem_max
@@ -546,7 +547,7 @@ diff -ruN init.samsung/init.rc init.cm9/init.rc
  
  # Define TCP buffer sizes for various networks
  #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
-@@ -565,39 +281,31 @@
+@@ -565,39 +282,31 @@
      setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
      setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
  
@@ -601,7 +602,7 @@ diff -ruN init.samsung/init.rc init.cm9/init.rc
  on property:vold.decrypt=trigger_reset_main
      class_reset main
  
-@@ -618,14 +326,6 @@
+@@ -618,14 +327,6 @@
      class_reset late_start
      class_reset main
  
@@ -616,7 +617,7 @@ diff -ruN init.samsung/init.rc init.cm9/init.rc
  # Used to disable USB when switching states
  on property:sys.usb.config=none
      stop adbd
-@@ -664,6 +364,8 @@
+@@ -664,6 +365,8 @@
      start adbd
      setprop sys.usb.state $sys.usb.config
  
@@ -625,7 +626,7 @@ diff -ruN init.samsung/init.rc init.cm9/init.rc
  on property:persist.sys.usb.config=*
      setprop sys.usb.config $persist.sys.usb.config
  
-@@ -677,6 +379,7 @@
+@@ -677,6 +380,7 @@
      class core
      console
      disabled
@@ -633,7 +634,7 @@ diff -ruN init.samsung/init.rc init.cm9/init.rc
      group log
  
  on property:ro.debuggable=1
-@@ -710,12 +413,13 @@
+@@ -710,12 +414,13 @@
      critical
      onrestart restart zygote
      onrestart restart media
@@ -648,7 +649,7 @@ diff -ruN init.samsung/init.rc init.cm9/init.rc
  
  service netd /system/bin/netd
      class main
-@@ -730,17 +434,7 @@
+@@ -730,17 +435,7 @@
      socket rild stream 660 root radio
      socket rild-debug stream 660 radio system
      user root
@@ -667,7 +668,16 @@ diff -ruN init.samsung/init.rc init.cm9/init.rc
  
  service surfaceflinger /system/bin/surfaceflinger
      class main
-@@ -759,37 +453,28 @@
+@@ -750,7 +445,7 @@
+ 
+ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
+     class main
+-    socket zygote stream 666
++    socket zygote stream 660 root system
+     onrestart write /sys/android_power/request_state wake
+     onrestart write /sys/power/state on
+     onrestart restart media
+@@ -759,37 +454,28 @@
  service drm /system/bin/drmserver
      class main
      user drm
@@ -709,7 +719,7 @@ diff -ruN init.samsung/init.rc init.cm9/init.rc
      class main
      socket bluetooth stream 660 bluetooth bluetooth
      socket dbus_bluetooth stream 660 bluetooth bluetooth
-@@ -798,41 +483,15 @@
+@@ -798,41 +484,15 @@
      group bluetooth net_bt_admin misc
      disabled
  
@@ -753,7 +763,7 @@ diff -ruN init.samsung/init.rc init.cm9/init.rc
      disabled
      oneshot
  
-@@ -840,7 +499,7 @@
+@@ -840,7 +500,7 @@
      class main
      socket mtpd stream 600 system system
      user vpn
@@ -762,7 +772,7 @@ diff -ruN init.samsung/init.rc init.cm9/init.rc
      disabled
      oneshot
  
-@@ -856,58 +515,13 @@
+@@ -856,58 +516,13 @@
      disabled
      oneshot
  
@@ -1751,7 +1761,7 @@ diff -ruN init.samsung/init.rc.2 init.cm9/init.rc.2
 -	oneshot
 diff -ruN init.samsung/init.smdk4210.rc init.cm9/init.smdk4210.rc
 --- init.samsung/init.smdk4210.rc	2012-05-21 15:21:24.821842888 +0300
-+++ init.cm9/init.smdk4210.rc	2012-05-21 15:22:46.301844389 +0300
++++ init.cm9/init.smdk4210.rc	2012-07-18 23:51:35.000000000 +0300
 @@ -1,12 +1,78 @@
  import init.smdk4210.usb.rc
  
@@ -1832,7 +1842,7 @@ diff -ruN init.samsung/init.smdk4210.rc init.cm9/init.smdk4210.rc
      # give system access to wpa_supplicant.conf for backup and restore
      mkdir /data/misc/wifi 0770 wifi wifi
      chmod 0770 /data/misc/wifi
-@@ -15,17 +81,216 @@
+@@ -15,17 +81,218 @@
      mkdir /data/misc/dhcp 0770 dhcp dhcp
      chown dhcp dhcp /data/misc/dhcp
  
@@ -1995,6 +2005,8 @@ diff -ruN init.samsung/init.smdk4210.rc init.cm9/init.smdk4210.rc
 +# Vibetonz
 +    chmod 0660 /dev/tspdrv
 +    chown root shell /dev/tspdrv
++    chmod 0660 /sys/vibrator/pwm_val
++    chown system system /sys/vibrator/pwm_val
 +
 +# Permissions for LCD
 +    chown system radio /sys/class/lcd/panel/lcd_power
@@ -2054,7 +2066,7 @@ diff -ruN init.samsung/init.smdk4210.rc init.cm9/init.smdk4210.rc
  # Permissions for dvfs lock
      chown system system /sys/power/cpufreq_max_limit
      chown system system /sys/power/cpufreq_min_limit
-@@ -35,12 +300,6 @@
+@@ -35,12 +302,6 @@
      chown system system /sys/power/gpu_lock
      chmod 0660 /sys/power/gpu_lock
  
@@ -2067,7 +2079,7 @@ diff -ruN init.samsung/init.smdk4210.rc init.cm9/init.smdk4210.rc
  # Permisions for sensors
      chown radio system /sys/devices/virtual/K3G_GYRO-dev/k3g/gyro_selftest
      chown radio system /sys/devices/virtual/K3G_GYRO-dev/k3g/gyro_get_temp
-@@ -48,6 +307,16 @@
+@@ -48,6 +309,16 @@
      chown radio system /sys/devices/virtual/accelerometer/accelerometer/acc_file
      chown radio system /sys/devices/virtual/sec/gsensorcal/calibration
  
@@ -2084,7 +2096,7 @@ diff -ruN init.samsung/init.smdk4210.rc init.cm9/init.smdk4210.rc
  # permissions for NFC
      setprop ro.nfc.port "I2C"
      chmod 0600 /dev/pn544
-@@ -55,68 +324,66 @@
+@@ -55,68 +326,66 @@
  
  # Device Encryption by B2B Security Lab. 
      setprop ro.crypto.keyfile.userdata /efs/metadata
@@ -2182,8 +2194,8 @@ diff -ruN init.samsung/init.smdk4210.rc init.cm9/init.smdk4210.rc
 +    keycodes 114 115 116
 diff -ruN init.samsung/init.smdk4210.rc.2 init.cm9/init.smdk4210.rc.2
 --- init.samsung/init.smdk4210.rc.2	1970-01-01 02:00:00.000000000 +0200
-+++ init.cm9/init.smdk4210.rc.2	2012-05-21 15:22:46.301844389 +0300
-@@ -0,0 +1,394 @@
++++ init.cm9/init.smdk4210.rc.2	2012-07-18 23:51:45.000000000 +0300
+@@ -0,0 +1,396 @@
 +import init.smdk4210.usb.rc
 +
 +on early-init
@@ -2426,6 +2438,8 @@ diff -ruN init.samsung/init.smdk4210.rc.2 init.cm9/init.smdk4210.rc.2
 +# Vibetonz
 +    chmod 0660 /dev/tspdrv
 +    chown root shell /dev/tspdrv
++    chmod 0660 /sys/vibrator/pwm_val
++    chown system system /sys/vibrator/pwm_val
 +
 +# Permissions for LCD
 +    chown system radio /sys/class/lcd/panel/lcd_power

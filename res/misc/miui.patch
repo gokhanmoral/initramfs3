@@ -8,7 +8,7 @@ diff -ruN init.samsung/default.prop init.miui/default.prop
 -persist.sys.usb.config=mtp,adb
 +persist.sys.usb.config=mass_storage,adb
 diff -ruN init.samsung/init.rc init.miui/init.rc
---- init.samsung/init.rc	2012-05-21 15:21:24.821842888 +0300
+--- init.samsung/init.rc	2012-07-08 15:44:20.781792634 +0300
 +++ init.miui/init.rc	2012-05-21 15:21:24.821842888 +0300
 @@ -22,7 +22,7 @@
      export ANDROID_DATA /data
