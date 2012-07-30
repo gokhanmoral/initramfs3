@@ -144,7 +144,7 @@
   <settingsTab name="Audio">
     <settingsPane description="Headphone Amplification Settings" name="Headphone Amplification">
       <seekBar description="Headphone Amplifier Level (0-3 which corresponds to 0-1.5-3-6dB)" 
-		name="Headphone Amplifier" action="soundgasm_hp" unit="" min="0" reversed="false" step="1" max="3"/>
+		name="Headphone Amplifier" action="eargasm_hp" unit="" min="0" reversed="false" step="1" max="3"/>
     </settingsPane>
   </settingsTab>
   <settingsTab name="Screen">
@@ -160,7 +160,7 @@
     </settingsPane>
     <settingsPane description="Other Settings" name="Other Settings">
        <seekBar description="User adjustable gamma shift." 
-		name="Gamma Shift" action="generic /sys/devices/platform/samsung-pd.2/s3cfb.0/spi_gpio.3/spi_master/spi3/spi3.0/lcd/panel/user_gamma_adjust" unit="" min="-50" reversed="false" step="5" max="50"/>
+		name="Gamma Shift" action="generic /sys/devices/platform/samsung-pd.2/s3cfb.0/spi_gpio.3/spi3.0/lcd/panel/user_gamma_adjust" unit="" min="-50" reversed="false" step="5" max="50"/>
        <seekBar description="Vibration intensity level (default 6)" 
 		name="Vibration Intensity" action="generic /sys/devices/platform/tspdrv/vibrator_level" unit="" min="0" reversed="false" step="1" max="6"/>
        <checkbox description="Enable inverting the screen colors by quickly pressing Home button 4 times" name="mDNIe Negative Toggle" action="generic01 /sys/module/gpio_keys/parameters/mdnie_shortcut_enabled" label="mDNIe Negative Toggle"/>
@@ -185,9 +185,9 @@
              <spinnerItem name="Breathing" value="1"/> 
              <spinnerItem name="Blinking" value="2"/> 
        </spinner> 
-       <spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. In CM9, if you have lights enabled screen brightness changes may trigger lights on. It is normal. If you want them to stay disabled you have to disable leds in CM9 menu." name="led_timeout" action="generic /sys/class/misc/notification/led_timeout">
+       <spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. You will need to use this setting on Samsung ROMs if you want to use led fadeout effect. This setting is not effective in AOSP ROMs. Use timeout setting in CM9/10 menus instead." name="led_timeout" action="generic /sys/class/misc/notification/led_timeout_ms">
              <spinnerItem name="Disabled" value="0"/> 
-             <spinnerItem name="1.5 sec" value="1500"/> 
+             <spinnerItem name="1 sec" value="1000"/> 
              <spinnerItem name="3 sec" value="3000"/> 
              <spinnerItem name="6 sec" value="6000"/> 
              <spinnerItem name="15 sec" value="15000"/> 
@@ -219,6 +219,14 @@
              <spinnerItem name="vr" value="vr"/> 
              <spinnerItem name="cfq" value="cfq"/> 
       </spinner>
+      <spinner description="ZRAM (Compressed swap space in RAM) size" name="ZRAM Size" action="zram">
+             <spinnerItem name="disabled" value="0"/> 
+             <spinnerItem name="100MB" value="100"/> 
+             <spinnerItem name="150MB" value="150"/> 
+             <spinnerItem name="200MB" value="200"/> 
+             <spinnerItem name="250MB" value="250"/> 
+             <spinnerItem name="300MB" value="300"/> 
+      </spinner>
       <spinner description="Charge current setting" name="Charge Current" action="chargecurrent">
              <spinnerItem name="AC:650mA, Misc,USB:450mA (Stock)" value="1"/> 
              <spinnerItem name="AC,Misc:650mA, USB:450mA" value="2"/> 
@@ -234,7 +242,6 @@
     </settingsPane>
     <settingsPane description="Removing/Reinstalling root to support some apps which requires you not to have a rooted phone." name="Remove/Reinstall Root">
       <button description="Removes su and Superuser.apk files from the system partition" name="Remove Root" action="remove-root" label="Remove Root"/>
-      <button description="Tries to reinstall root. If this fails, please check auto-install root checkbox and restart." name="Install  Root" action="install-root" label="Install Root"/>
       <checkbox description="If checked, installs root on the next restart." name="Auto-Install Root" action="generic /tmp/install_root" label="Auto-Install Root"/>
     </settingsPane>
   </settingsTab>

@@ -10,6 +10,7 @@ do
 #sync;
 busybox mount -o remount,noatime $k;
 done;
+
 #enable kmem interface for everyone
 echo 0 > /proc/sys/kernel/kptr_restrict
 

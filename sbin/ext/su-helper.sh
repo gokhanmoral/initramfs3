@@ -1,6 +1,7 @@
 #!/sbin/busybox sh
 # root installation helper by GM
 rm /data/.siyah/install-root > /dev/null 2>&1
+exit
 (
 while : ; do
 	# keep this running until we have root

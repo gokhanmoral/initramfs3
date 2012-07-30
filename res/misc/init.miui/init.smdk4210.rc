@@ -53,9 +53,6 @@ on boot
     chmod 0600 /dev/pn544
     chown nfc nfc /dev/pn544
 
-# Permission for MHL
-    chown system radio /sys/class/mhl/test_result
-
 # Device Encryption by B2B Security Lab. 
     setprop ro.crypto.keyfile.userdata /efs/metadata
     

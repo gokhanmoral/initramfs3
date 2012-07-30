@@ -7,7 +7,7 @@ tar xvf /res/misc/dev.tar
 
 if grep -q bootmode=2 /proc/cmdline ; then
   echo 0 > /proc/sys/kernel/rom_feature_set
-  mv /recovery.rc /init.rc
+#  mv /recovery.rc /init.rc
   exec /sbin/init2
 fi
 if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
@@ -78,14 +78,14 @@ mv -f /res/misc/init.cm10/* /
 else
 if [ "$B2G" == 1 ];
 then
-patch -p1 < /res/misc/b2g.patch
+cp -a /res/misc/init.b2g/* /
 mv /sbin/init.b2g /sbin/init.samsung
 fi;
 
 if [ "$AOSP" == 1 ];
 then
 echo 1 > /proc/sys/kernel/rom_feature_set
-patch -p1 < /res/misc/cm9.patch
+cp -a /res/misc/init.cm9/* /
 rm /init.rc.2
 rm -rf /vendor
 else
@@ -95,7 +95,7 @@ fi;
 
 if [ "$MIUI" == 1 ];
 then
-patch -p1 < /res/misc/miui.patch
+cp -a /res/misc/init.miui/* /
 fi
 fi
 

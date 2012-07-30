@@ -281,6 +281,11 @@ on post-fs-data
     chmod 0775 /efs/.files/.dx1
     chmod 0775 /efs/.files/.dm33
     chmod 0775 /efs/.files/.mp301
+    
+    	# IMEI
+    	mkdir /efs/imei 0775
+	    chown radio system /efs/imei
+	    chmod 0775 /efs/imei
 
     # If there is no fs-post-data action in the init.<device>.rc file, you
     # must uncomment this line, otherwise encrypted filesystems
@@ -309,6 +314,9 @@ on post-fs-data
     chmod 0600 /dev/pn544
     chown nfc nfc /dev/pn544
 
+# Permission for MHL
+    chown system radio /sys/class/mhl/test_result
+
 # Added by Yamaha Corporation. -----------------------------------------
     # setup for alsa snd device
     chmod 0770 /dev/snd/pcmC0D0c
@@ -320,7 +328,9 @@ on post-fs-data
 
     # create log system
     mkdir /data/log 0775 system log
+    mkdir /data/anr 0775 system log
     chown system log /data/log
+    chown system log /data/anr
 
     chmod 0775 /data/log
     chmod 0775 /data/anr
@@ -581,16 +591,6 @@ on boot
     chmod 0770 /system/bin/rtc_log.sh
     chown system system /system/bin/rtc_log.sh
 
-# DVFS - cpufreq ondemand
-#    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 5
-#    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 85
-
-# DVFS - limit cpufreq during booting sequence
-#    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor userspace
-#    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed 1000000
-#    write /data/dvfs "sleep 10 && echo 800000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed && sleep 30 && echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
-#    chmod 0770 /data/dvfs
-
 # Set this property so surfaceflinger is not started by system_init
     setprop system_init.startsurfaceflinger 0
 
@@ -752,7 +752,7 @@ service surfaceflinger /system/bin/surfaceflinger
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
     class main
-    socket zygote stream 666
+    socket zygote stream 660 root system
     onrestart write /sys/android_power/request_state wake
     onrestart write /sys/power/state on
     onrestart restart media
@@ -761,7 +761,7 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
 service drm /system/bin/drmserver
     class main
     user drm
-    group system inet sdcard_rw media_rw radio
+    group system inet drmrpc sdcard_rw media_rw radio
 
 service media /system/bin/mediaserver
     class main
@@ -834,7 +834,7 @@ service racoon /system/bin/racoon
     class main
     socket racoon stream 600 system system
     # racoon will setuid to vpn after getting necessary resources.
-    group net_admin
+    group vpn net_admin inet
     disabled
     oneshot
 

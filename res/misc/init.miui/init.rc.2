@@ -22,7 +22,7 @@ loglevel 3
     export ANDROID_DATA /data
     export ASEC_MOUNTPOINT /mnt/asec
     export LOOP_MOUNTPOINT /mnt/obb
-    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar
+    export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework-miui.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/filterfw.jar:/system/framework/sechardware.jar
 
 # Disable CFQ slice idle delay
     write /sys/block/mmcblk0/queue/iosched/slice_idle 0
@@ -107,9 +107,14 @@ on fs
 # mount ext4 partitions
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
     mount ext4 /res/dev/system /system noatime wait ro
-    
+
+    # verify filesystem (UMS)
+    exec sformat /dev/block/mmcblk0p11 vfat
+    # make sure sdcard is mounted because we may have our data and cache partitions on it
+    mount vfat /dev/block/mmcblk0p11 /mnt/.secondrom wait utf8
+
     exec sfsck /res/dev/cache ext4
-    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
+    mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait
 
     mkdir /efs
     #mount rfs /dev/block/mmcblk0p1 /efs nosuid nodev check=no
@@ -127,12 +132,9 @@ on fs
     # check encryption status, checking UMS & data should be excuted after this command 
     exec check_encryption_status /res/dev/data
     
-    # verfiy filesystem (UMS)
-    exec sformat /dev/block/mmcblk0p11 vfat
-	  
 on post-fs
     exec sfsck /res/dev/data ext4
-    mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
+    mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
 
     # once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
@@ -170,6 +172,9 @@ on post-fs-data
     # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
+    mkdir /data/system
+    chown system system /data/system
+    chmod 0771 /data/system
 
     # Create dump dir and collect dumps.
     # Do this before we mount cache so eventually we can use cache for
@@ -214,7 +219,7 @@ on post-fs-data
     mkdir /data/misc/wifi 0770 wifi wifi
     chmod 0770 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    mkdir /data/local 0751 root root
+    mkdir /data/local 0771 shell shell
     mkdir /data/local/tmp 0771 shell shell
     mkdir /data/data 0771 system system
     mkdir /data/app-private 0771 system system

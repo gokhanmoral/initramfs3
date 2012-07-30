@@ -37,15 +37,10 @@ on fs
     symlink /lib/modules/dhd.ko /system/lib/modules/dhd.ko
     symlink /lib/modules/scsi_wait_scan.ko /system/lib/modules/scsi_wait_scan.ko
     symlink /lib/modules/Si4709_driver.ko /system/lib/modules/Si4709_driver.ko
-    # verify filesystem (UMS)
-    exec sformat /dev/block/mmcblk0p11 vfat
-    # make sure sdcard is mounted because we may have our data and cache partitions on it
-    mount vfat /dev/block/mmcblk0p11 /mnt/.secondrom wait utf8
-
     exec sfsck /res/dev/cache ext4
-    mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait
+    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
 
-    mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
+    mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
 #    mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait
     
     mount ext4 /dev/block/mmcblk0p1 /efs nosuid nodev noatime wait
@@ -240,6 +235,8 @@ on post-fs-data
 # Vibetonz
     chmod 0660 /dev/tspdrv
     chown root shell /dev/tspdrv
+    chmod 0660 /sys/vibrator/pwm_val
+    chown system system /sys/vibrator/pwm_val
 
 # Permissions for LCD
     chown system radio /sys/class/lcd/panel/lcd_power

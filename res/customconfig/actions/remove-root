@@ -15,7 +15,7 @@ if [ -f /system/xbin/su ];then
   rm -f /data/app/*uper?ser.apk > /dev/null 2>&1
   mount -o remount,ro /dev/block/mmcblk0p9 /system > /dev/null 2>&1
   # run reinstall-helper
-  /sbin/busybox sh /sbin/ext/su-helper.sh
+  #/sbin/busybox sh /sbin/ext/su-helper.sh
   echo Root removed. The apps which require root, including this app, will have limited functionality.
 else
   echo You do not have root.

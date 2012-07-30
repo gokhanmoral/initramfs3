@@ -1,4 +1,5 @@
 import init.smdk4210.usb.rc
+import init.gps.rc
 
 on early-init
     export EXTERNAL_STORAGE /storage/sdcard0
@@ -9,6 +10,7 @@ on early-init
     mkdir /storage/usbdisk0 0775 system system
     mkdir /efs 0771 radio system
     mkdir /preload 0771 system system
+    mkdir /mnt 0775 root system
     mkdir /mnt/.lfs 0755 root root
 
     # for backwards compatibility
@@ -144,10 +146,6 @@ on post-fs-data
 
     chmod 0775 /data/log
     chmod 0775 /data/anr
-
-    chmod 0662 /dev/log/radio
-    chmod 0662 /dev/log/main
-    chmod 0662 /dev/log/event
 
 #panorama directory creation
     mkdir /data/pxtmpdir 0775

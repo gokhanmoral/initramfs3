@@ -165,6 +165,7 @@ on post-fs-data
     mkdir /data/app-private 0771 system system
     mkdir /data/app 0771 system system
     mkdir /data/property 0700 root root
+    mkdir /data/radio 0770 radio radio
 
     # create dalvik-cache and double-check the perms, so as to enforce our permissions
     mkdir /data/dalvik-cache 0771 system system
@@ -444,7 +445,7 @@ service surfaceflinger /system/bin/surfaceflinger
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
     class main
-    socket zygote stream 666
+    socket zygote stream 660 root system
     onrestart write /sys/android_power/request_state wake
     onrestart write /sys/power/state on
     onrestart restart media

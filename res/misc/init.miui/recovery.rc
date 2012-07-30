@@ -5,15 +5,12 @@ on init
     export PATH /sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
     export ANDROID_ROOT /system
     export ANDROID_DATA /data
-    export ANDROID_CACHE /cache
-    export SECONDARY_STORAGE /emmc
     export EXTERNAL_STORAGE /sdcard
 
     #symlink /system/etc /etc
 
-    mkdir /emmc
     mkdir /sdcard
-    mkdir /usbdisk
+    mkdir /sdcard1
     mkdir /system
     mkdir /data
     mkdir /cache
@@ -33,11 +30,6 @@ on fs
     exec sformat /dev/block/mmcblk0p11 vfat
 
 on boot
-# Permissions for mDNIe
-    chown system media_rw /sys/class/mdnie/mdnie/mode
-    chown system media_rw /sys/class/mdnie/mdnie/outdoor
-    chown system media_rw /sys/class/mdnie/mdnie/scenario
-    write /sys/class/mdnie/mdnie/scenario 4
 
     ifup lo
     hostname localhost
@@ -67,7 +59,6 @@ on property:adb.recovery=1
     write /sys/class/android_usb/android0/iProduct $ro.product.model
     write /sys/class/android_usb/android0/iSerial $ro.serialno
     start adbd
-    setprop service.adb.root 1
 
 # Restart adbd so it can run as root
 on property:service.adb.root=1

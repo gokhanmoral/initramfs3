@@ -15,7 +15,9 @@ loglevel 3
 
 # setup the global environment
     export PATH /sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
-    export LD_LIBRARY_PATH /vendor/lib:/system/lib
+    export TMPDIR /data/local/tmp
+    export GRE_HOME /system/b2g
+    export LD_LIBRARY_PATH /vendor/lib:/system/lib:/system/b2g
     export ANDROID_BOOTLOGO 1
     export ANDROID_ROOT /system
     export ANDROID_ASSETS /system/app
@@ -106,10 +108,17 @@ loglevel 3
 on fs
 # mount ext4 partitions
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
-    mount ext4 /res/dev/system /system noatime wait ro
-    
+    mount ext4 /res/dev/system /system noatime wait rw
+    chmod 0755 /system/b2g/b2g
+    chmod 0755 /system/b2g/updater
+
+    # verify filesystem (UMS)
+    exec sformat /dev/block/mmcblk0p11 vfat
+    # make sure sdcard is mounted because we may have our data and cache partitions on it
+    mount vfat /dev/block/mmcblk0p11 /mnt/.secondrom wait utf8
+
     exec sfsck /res/dev/cache ext4
-    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
+    mount ext4 loop@/res/dev/cache /cache nosuid nodev noatime wait
 
     mkdir /efs
     #mount rfs /dev/block/mmcblk0p1 /efs nosuid nodev check=no
@@ -127,12 +136,9 @@ on fs
     # check encryption status, checking UMS & data should be excuted after this command 
     exec check_encryption_status /res/dev/data
     
-    # verfiy filesystem (UMS)
-    exec sformat /dev/block/mmcblk0p11 vfat
-	  
 on post-fs
     exec sfsck /res/dev/data ext4
-    mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
+    mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
 
     # once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
@@ -170,6 +176,9 @@ on post-fs-data
     # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
+    mkdir /data/system
+    chown system system /data/system
+    chmod 0771 /data/system
 
     # Create dump dir and collect dumps.
     # Do this before we mount cache so eventually we can use cache for
@@ -214,7 +223,7 @@ on post-fs-data
     mkdir /data/misc/wifi 0770 wifi wifi
     chmod 0770 /data/misc/wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    mkdir /data/local 0751 root root
+    mkdir /data/local 0771 shell shell
     mkdir /data/local/tmp 0771 shell shell
     mkdir /data/data 0771 system system
     mkdir /data/app-private 0771 system system
@@ -276,11 +285,6 @@ on post-fs-data
     chmod 0775 /efs/.files/.dx1
     chmod 0775 /efs/.files/.dm33
     chmod 0775 /efs/.files/.mp301
-    
-    	# IMEI
-    	mkdir /efs/imei 0775
-	    chown radio system /efs/imei
-	    chmod 0775 /efs/imei
 
     # If there is no fs-post-data action in the init.<device>.rc file, you
     # must uncomment this line, otherwise encrypted filesystems
@@ -309,9 +313,6 @@ on post-fs-data
     chmod 0600 /dev/pn544
     chown nfc nfc /dev/pn544
 
-# Permission for MHL
-    chown system radio /sys/class/mhl/test_result
-
 # Added by Yamaha Corporation. -----------------------------------------
     # setup for alsa snd device
     chmod 0770 /dev/snd/pcmC0D0c
@@ -323,9 +324,7 @@ on post-fs-data
 
     # create log system
     mkdir /data/log 0775 system log
-    mkdir /data/anr 0775 system log
     chown system log /data/log
-    chown system log /data/anr
 
     chmod 0775 /data/log
     chmod 0775 /data/anr
@@ -586,11 +585,22 @@ on boot
     chmod 0770 /system/bin/rtc_log.sh
     chown system system /system/bin/rtc_log.sh
 
+# DVFS - cpufreq ondemand
+#    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 5
+#    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 85
+
+# DVFS - limit cpufreq during booting sequence
+#    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor userspace
+#    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed 1000000
+#    write /data/dvfs "sleep 10 && echo 800000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed && sleep 30 && echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
+#    chmod 0770 /data/dvfs
+
 # Set this property so surfaceflinger is not started by system_init
     setprop system_init.startsurfaceflinger 0
 
     class_start core
     class_start main
+    class_start b2g
 
 on nonencrypted
     class_start late_start
@@ -705,8 +715,6 @@ service servicemanager /system/bin/servicemanager
     user system
     group system
     critical
-    onrestart restart zygote
-    onrestart restart media
 
 service vold /system/bin/vold
     class core
@@ -724,7 +732,7 @@ service debuggerd /system/bin/debuggerd
 
 service ril-daemon /system/bin/rild
     class main
-    socket rild stream 660 root radio
+    socket rild stream 666 root radio
     socket rild-debug stream 660 radio system
     user root
     group radio cache inet misc audio sdcard_rw log
@@ -744,19 +752,21 @@ service surfaceflinger /system/bin/surfaceflinger
     user system
     group graphics
     onrestart restart zygote
+    disabled
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
     class main
-    socket zygote stream 660 root system
+    socket zygote stream 666
     onrestart write /sys/android_power/request_state wake
     onrestart write /sys/power/state on
     onrestart restart media
     onrestart restart netd
+    disabled
 
 service drm /system/bin/drmserver
     class main
     user drm
-    group system inet drmrpc sdcard_rw media_rw radio
+    group system inet sdcard_rw media_rw radio
 
 service media /system/bin/mediaserver
     class main
@@ -829,7 +839,7 @@ service racoon /system/bin/racoon
     class main
     socket racoon stream 600 system system
     # racoon will setuid to vpn after getting necessary resources.
-    group vpn net_admin inet
+    group net_admin
     disabled
     oneshot
 
@@ -896,6 +906,26 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
 #    class main
 #    user root
 #    oneshot
+
+service fakeperm /system/bin/fakeperm
+    class b2g
+    user root
+
+service b2g /system/b2g/b2g
+    class b2g
+    user root
+    onrestart restart media
+
+service rilproxy /system/bin/rilproxy
+    class b2g
+    socket rilproxy stream 660 root system
+    socket rilproxyd stream 660 root system
+    user root
+    group radio
+
+service mount-sdcard /system/bin/mountvol.sh sdcard
+    class b2g
+    oneshot
     
 # 2011-12-08/systemsw/kyo/ bugreport is triggered by holding down volume down, volume up and power
 service bugreport /system/bin/bugmailer.sh -v
