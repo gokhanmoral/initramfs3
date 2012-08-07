@@ -7,7 +7,7 @@ tar xvf /res/misc/dev.tar
 
 if grep -q bootmode=2 /proc/cmdline ; then
   echo 0 > /proc/sys/kernel/rom_feature_set
-#  mv /recovery.rc /init.rc
+  mv /recovery.rc /init.rc
   exec /sbin/init2
 fi
 if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
