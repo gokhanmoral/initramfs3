@@ -54,10 +54,8 @@ service adbd /sbin/adbd recovery
     disabled
 
 # Always start adbd on userdebug and eng builds
+# In recovery, always run adbd as root.
 on property:ro.debuggable=1
-    setprop adb.recovery 1
-
-on property:adb.recovery=1
     write /sys/class/android_usb/android0/enable 0
     write /sys/class/android_usb/android0/idVendor 04e8
     write /sys/class/android_usb/android0/idProduct 685e

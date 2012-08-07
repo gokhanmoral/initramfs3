@@ -1,4 +1,4 @@
-#!/sbin/ext/busybox sh
+#!/sbin/busybox sh
 
 mount -t rootfs -o remount,rw rootfs
 insmod /lib/modules/logger.ko
@@ -34,9 +34,6 @@ cd /
 eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5)
 dd bs=512 if=/dev/block/mmcblk0p5 skip=$recovery_offset count=$recovery_len | xzcat | tar x
 
-# why don't we use thunderbolt scripts in recovery?
-. /sbin/ext/thunderbolt.sh
-
 mkdir /mnt/.secondrom
 mount -t vfat /dev/block/mmcblk0p11 /mnt/.secondrom
 mkdir /mnt/.secondrom/.secondrom
@@ -46,9 +43,9 @@ mount -t ext4 /mnt/.secondrom/.secondrom/cache.img /secondrom_cache
 mkdir /secondrom_data
 mkdir /secondrom_system
 
-if /sbin/ext/busybox [ -f /cache/recovery/command ];
+if /sbin/busybox [ -f /cache/recovery/command ];
 then
-  /sbin/ext/busybox cp /res/keys-samsung /res/keys
+  /sbin/busybox cp /res/keys-samsung /res/keys
   recovery-samsung
 else
   echo 1 > /sbin/recovery-is-running

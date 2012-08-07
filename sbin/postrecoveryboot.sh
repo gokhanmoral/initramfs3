@@ -1,1 +1,0 @@
-#!/sbin/ext/busybox sh

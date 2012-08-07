@@ -7,13 +7,13 @@ tar xvf /res/misc/dev.tar
 
 if grep -q bootmode=2 /proc/cmdline ; then
   echo 0 > /proc/sys/kernel/rom_feature_set
-  mv /recovery.rc /init.rc
+  cp -a /recovery.rc /init.rc
   exec /sbin/init2
 fi
 if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
   # low power mode
   echo 0 > /proc/sys/kernel/rom_feature_set
-  cp lpm.rc init.rc
+  cp -a /lpm.rc /init.rc
   rm init.smdk4210.rc
   exec /sbin/init2
 fi

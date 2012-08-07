@@ -55,6 +55,7 @@ select_profile()
     fi
     echo $1 > $ACTIVE_PROFILE
   fi
+  chmod 777 ${PROFILE_PATH}/${1}.profile
 }
 
 delete_profile()
@@ -93,6 +94,7 @@ write_config()
     fi
   done < $DEFAULT_PROFILE > $TEMP_CONFIG
   cp $TEMP_CONFIG $_CONFIG_FILE
+  chmod 777 $_CONFIG_FILE
   rm -f $TEMP_CONFIG
 }
 
@@ -125,14 +127,18 @@ read_defaults ()
 
 if [ ! -f $PROFILE_PATH/$LAST_SELECTED ];then 
   echo default > $PROFILE_PATH/$LAST_SELECTED
+  chmod 777 $PROFILE_PATH/$LAST_SELECTED
 fi
 
 if [ ! -f $PROFILE_PATH/default.profile ];then
   cp $DEFAULT_PROFILE $PROFILE_PATH/default.profile
+  chmod 777 $PROFILE_PATH/default.profile
 fi
 if [ ! -f $PROFILE_PATH/battery.profile ];then
   cp $BATTERY_PROFILE $PROFILE_PATH/battery.profile
+  chmod 777 $PROFILE_PATH/battery.profile
 fi
 if [ ! -f $PROFILE_PATH/performance.profile ];then
   cp $PERFORMANCE_PROFILE $PROFILE_PATH/performance.profile
+  chmod 777 $PROFILE_PATH/performance.profile
 fi

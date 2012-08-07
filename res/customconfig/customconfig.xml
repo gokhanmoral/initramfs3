@@ -59,7 +59,7 @@
              <spinnerItem name="7 (6-steps + 1500MHz)" value="7"/> 
              <spinnerItem name="8 (6-steps + 100MHz + 1600MHz)" value="8"/> 
              <spinnerItem name="9 (8-step + 1500MHz)" value="9"/> 
-             <spinnerItem name="18 (All available)" value="18"/> 
+             <spinnerItem name="16 (All available)" value="16"/> 
       </spinner>
        <spinner description="This will set the default CPU governor. Default CPU governor will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps." name="Default CPU Governor" action="generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor">
              <spinnerItem name="pegasusq" value="pegasusq"/> 
@@ -160,7 +160,7 @@
     </settingsPane>
     <settingsPane description="Other Settings" name="Other Settings">
        <seekBar description="User adjustable gamma shift." 
-		name="Gamma Shift" action="generic /sys/devices/platform/samsung-pd.2/s3cfb.0/spi_gpio.3/spi3.0/lcd/panel/user_gamma_adjust" unit="" min="-50" reversed="false" step="5" max="50"/>
+		name="Gamma Shift" action="generic /sys/devices/platform/samsung-pd.2/s3cfb.0/spi_gpio.3/spi_master/spi3/spi3.0/lcd/panel/user_gamma_adjust" unit="" min="-50" reversed="false" step="5" max="50"/>
        <seekBar description="Vibration intensity level (default 6)" 
 		name="Vibration Intensity" action="generic /sys/devices/platform/tspdrv/vibrator_level" unit="" min="0" reversed="false" step="1" max="6"/>
        <checkbox description="Enable inverting the screen colors by quickly pressing Home button 4 times" name="mDNIe Negative Toggle" action="generic01 /sys/module/gpio_keys/parameters/mdnie_shortcut_enabled" label="mDNIe Negative Toggle"/>
@@ -185,8 +185,9 @@
              <spinnerItem name="Breathing" value="1"/> 
              <spinnerItem name="Blinking" value="2"/> 
        </spinner> 
-       <spinner description="Led timeout. Leave it disabled if your ROM already has led timeout support. You will need to use this setting on Samsung ROMs if you want to use led fadeout effect. This setting is not effective in AOSP ROMs. Use timeout setting in CM9/10 menus instead." name="led_timeout" action="generic /sys/class/misc/notification/led_timeout_ms">
-             <spinnerItem name="Disabled" value="0"/> 
+       <spinner description="Led timeout. Select 'Use ROM defaults' if your ROM already has led timeout support (requires restart). You will need to use this setting on Samsung ROMs if you want to use led fadeout effect." name="led_timeout" action="generic /sys/class/misc/notification/led_timeout_ms">
+             <spinnerItem name="Use ROM defaults (disabled)" value="-1"/> 
+             <spinnerItem name="No timeout" value="0"/> 
              <spinnerItem name="1 sec" value="1000"/> 
              <spinnerItem name="3 sec" value="3000"/> 
              <spinnerItem name="6 sec" value="6000"/> 
@@ -203,7 +204,6 @@
   </settingsTab>
   <settingsTab name="Misc">
     <settingsPane description="Misc Settings" name="Misc Settings">
-      <!-- button description="Back up the efs partition" name="BackupEFS" action="efs-backup" label="Backup EFS"/ -->
       <checkbox description="Enable or Disable Android Logger (needs restart)" name="Android Logger" action="generic /tmp/logger" label="Android Logger"/>
       <!-- spinner description="This will set the suspend frequency used in ondemand governor to have ondemandX behaviour. This will only be set during early stages of booting (before init.d execution) and can be overriden by later scripts or apps and only effective while ondemand governor is in use." name="Default Ondemand Suspend Freq." action="generic /sys/devices/system/cpu/cpufreq/ondemand/suspend_freq">
              <spinnerItem name="1200MHz" value="1200000"/> 
