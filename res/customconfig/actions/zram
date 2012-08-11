@@ -14,6 +14,7 @@ else
   echo `expr $zram_size \* 1024 \* 1024` > /sys/devices/virtual/block/zram0/disksize
   mkswap /dev/block/zram0 > /dev/null 2>&1
   swapon /dev/block/zram0 > /dev/null 2>&1
+  sysctl -w vm.swappiness=90
 fi
 
 

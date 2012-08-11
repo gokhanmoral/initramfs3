@@ -54,8 +54,8 @@ select_profile()
       cp ${PROFILE_PATH}/${_ACTIVE_PROFILE}.profile ${PROFILE_PATH}/${1}.profile
     fi
     echo $1 > $ACTIVE_PROFILE
+    chmod 777 ${PROFILE_PATH}/${1}.profile
   fi
-  chmod 777 ${PROFILE_PATH}/${1}.profile
 }
 
 delete_profile()

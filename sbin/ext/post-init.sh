@@ -10,7 +10,7 @@ chmod 777 /data/.siyah
 ccxmlsum=`md5sum /res/customconfig/customconfig.xml | awk '{print $1}'`
 if [ "a${ccxmlsum}" != "a`cat /data/.siyah/.ccxmlsum`" ];
 then
-  rm -f /data/.siyah/*.profile
+#  rm -f /data/.siyah/*.profile
   echo ${ccxmlsum} > /data/.siyah/.ccxmlsum
 fi
 [ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah
@@ -80,9 +80,6 @@ chmod 777 /mnt/ntfs
 ##### Early-init phase tweaks #####
 /sbin/busybox sh /sbin/ext/tweaks.sh
 
-#apply last soundgasm level on boot
-/res/uci.sh soundgasm_hp $soundgasm_hp
-
 /sbin/busybox mount -t rootfs -o remount,ro rootfs
 
 ##### EFS Backup #####
@@ -92,13 +89,15 @@ sleep 30
 /sbin/busybox sh /sbin/ext/efs-backup.sh
 ) &
 
+sleep 12
+#apply last soundgasm level on boot
+/res/uci.sh soundgasm_hp $soundgasm_hp
+
 # apply ExTweaks defaults
 /res/uci.sh apply
 
-##### init scripts #####
-(
-/sbin/busybox sh /sbin/ext/run-init-scripts.sh
-)&
-
 #usb mode
 /res/customconfig/actions/usb-mode ${usb_mode}
+
+##### init scripts #####
+/sbin/busybox sh /sbin/ext/run-init-scripts.sh

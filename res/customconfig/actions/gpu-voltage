@@ -11,6 +11,6 @@ else
 fi
 
 if [ -f /sys/class/misc/gpu_voltage_control/gpu_control ];then
-echo "${GPUVOLT1}000 ${GPUVOLT2}000 ${GPUVOLT3}000" > /sys/class/misc/gpu_voltage_control/gpu_control
+echo "${GPUVOLT1}000 ${GPUVOLT2}000 ${GPUVOLT3}000 ${GPUVOLT4}000" > /sys/class/misc/gpu_voltage_control/gpu_control
 fi
 

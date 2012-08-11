@@ -6,6 +6,7 @@ busybox mount -t sysfs sysfs /sys
 tar xvf /res/misc/dev.tar
 
 if grep -q bootmode=2 /proc/cmdline ; then
+  cp -a /res/misc/init.40/* /
   echo 0 > /proc/sys/kernel/rom_feature_set
   cp -a /recovery.rc /init.rc
   exec /sbin/init2
@@ -13,7 +14,8 @@ fi
 if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
   # low power mode
   echo 0 > /proc/sys/kernel/rom_feature_set
-  cp -a /lpm.rc /init.rc
+  cp -a /res/misc/init.40/* /
+  cp lpm.rc init.rc
   rm init.smdk4210.rc
   exec /sbin/init2
 fi
@@ -21,13 +23,15 @@ fi
 SECONDROM=1
 NOBOOTLOGO=0
 mount -t ext4 -o ro /dev/block/mmcblk0p12 /preload
-mount -t vfat /dev/block/mmcblk0p11 /mnt/sdcard
+mount -t vfat /dev/block/mmcblk0p11 /mnt/sdcard && ( touch /mnt/sdcard/clockworkmod/.nomedia )
+mount -t vfat /dev/block/mmcblk1p1 /mnt/emmc && ( touch /mnt/emmc/clockworkmod/.nomedia )
 [ -f /preload/build.prop ] || SECONDROM=0
 [ -f /mnt/sdcard/.secondrom/data.img ] || SECONDROM=0
 [ -f /mnt/sdcard/.secondrom/cache.img ] || SECONDROM=0
 [ -f /mnt/sdcard/.nobootlogo ] && NOBOOTLOGO=1
 umount /preload
 umount /mnt/sdcard
+umount /mnt/emmc
 
 if [[ "$NOBOOTLOGO" == "1" && "$SECONDROM" == "0" ]];then
   /sbin/choose_rom
@@ -56,47 +60,41 @@ CM10=0
 
 [ -d /system/b2g ] && B2G=1
 [ -f /system/framework/framework2.jar ] || AOSP=1
-[ "`/sbin/busybox grep Slim /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i aosp /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i hydrog /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i =aokp /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i CyanogenMod /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i AdyScorpius /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i cMIUI /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i insanity /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i Oxygen /system/build.prop`" ] && AOSP=1
-[ "`/sbin/busybox grep -i =MIUI /system/build.prop`" ] && MIUI=1
 [ -f /system/framework/framework-miui.jar ] && MIUI=1
-[ -f /system/lib/ssl/engines/libkeystore.so ] && CM10=1
+[ -f /system/lib/ssl/engines/libkeystore.so ] && JB=1
+[ -f /system/framework/seccamera.jar ] || CM10=1
 
-if [ "$CM10" == 1 ];
+if [ "$JB" == 1 ];
 then
-echo 1 > /proc/sys/kernel/rom_feature_set
-rm -f /*
+  if [ "$CM10" == 1 ];
+  then
+    echo 1 > /proc/sys/kernel/rom_feature_set
 rm -rf /vendor
-mv -f /res/misc/init.cm10/* /
+    mv -f /res/misc/init.cm10/* /
+  else
+    echo 0 > /proc/sys/kernel/rom_feature_set
+    mv -f /res/misc/init.41/* /
+  fi
 else
-if [ "$B2G" == 1 ];
-then
-cp -a /res/misc/init.b2g/* /
-mv /sbin/init.b2g /sbin/init.samsung
-fi;
+  if [ "$B2G" == 1 ];
+  then
+    cp -a /res/misc/init.b2g/* /
+  fi;
 
-if [ "$AOSP" == 1 ];
-then
-echo 1 > /proc/sys/kernel/rom_feature_set
-cp -a /res/misc/init.cm9/* /
-rm /init.rc.2
-rm -rf /vendor
-else
-echo 0 > /proc/sys/kernel/rom_feature_set
-rm /init.smdk4210.rc.2
-fi;
+  if [ "$AOSP" == "1" ];
+  then
+    echo 1 > /proc/sys/kernel/rom_feature_set
+    mv -f /res/misc/init.cm9/* /
+    rm -rf /vendor
+  else
+    echo 0 > /proc/sys/kernel/rom_feature_set
+    mv -f /res/misc/init.40/* /
+  fi;
 
-if [ "$MIUI" == 1 ];
-then
-cp -a /res/misc/init.miui/* /
-fi
+  if [ "$MIUI" == 1 ];
+  then
+    cp -a /res/misc/init.miui/* /
+  fi
 fi
 
 if [ "$SECONDROM" == "1" ];then
@@ -107,4 +105,7 @@ else
 fi
 
 umount /system
+chmod 755 /innt
+chmod 644 /*.rc
+chmod 644 /*.prop
 exec /sbin/init2

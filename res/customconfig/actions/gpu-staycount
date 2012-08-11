@@ -15,5 +15,5 @@ fi
 
 # we need to set all three of them
 if [ -f /sys/class/misc/gpu_clock_control/gpu_staycount ];then
-echo "$GPUSTAYCOUNT1 $GPUSTAYCOUNT2 $GPUSTAYCOUNT3" > /sys/class/misc/gpu_clock_control/gpu_staycount
+echo "$GPUSTAYCOUNT1 $GPUSTAYCOUNT2 $GPUSTAYCOUNT3 $GPUSTAYCOUNT4" > /sys/class/misc/gpu_clock_control/gpu_staycount
 fi

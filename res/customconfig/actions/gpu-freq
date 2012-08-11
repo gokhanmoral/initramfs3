@@ -11,6 +11,6 @@ else
 fi
 
 if [ -f /sys/class/misc/gpu_clock_control/gpu_control ];then
-echo "$GPUFREQ1 $GPUFREQ2 $GPUFREQ3" > /sys/class/misc/gpu_clock_control/gpu_control
+echo "$GPUFREQ1 $GPUFREQ2 $GPUFREQ3 $GPUFREQ4" > /sys/class/misc/gpu_clock_control/gpu_control
 fi
 
