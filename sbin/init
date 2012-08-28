@@ -22,16 +22,15 @@ fi
 
 SECONDROM=1
 NOBOOTLOGO=0
+mount -t vfat /dev/block/mmcblk1p1 /mnt && ( touch /mnt/clockworkmod/.nomedia; umount /mnt; )
 mount -t ext4 -o ro /dev/block/mmcblk0p12 /preload
-mount -t vfat /dev/block/mmcblk0p11 /mnt/sdcard && ( touch /mnt/sdcard/clockworkmod/.nomedia )
-mount -t vfat /dev/block/mmcblk1p1 /mnt/emmc && ( touch /mnt/emmc/clockworkmod/.nomedia )
+mount -t vfat /dev/block/mmcblk0p11 /mnt && ( touch /mnt/clockworkmod/.nomedia )
 [ -f /preload/build.prop ] || SECONDROM=0
-[ -f /mnt/sdcard/.secondrom/data.img ] || SECONDROM=0
-[ -f /mnt/sdcard/.secondrom/cache.img ] || SECONDROM=0
-[ -f /mnt/sdcard/.nobootlogo ] && NOBOOTLOGO=1
+[ -f /mnt/.secondrom/data.img ] || SECONDROM=0
+[ -f /mnt/.secondrom/cache.img ] || SECONDROM=0
+[ -f /mnt/.nobootlogo ] && NOBOOTLOGO=1
 umount /preload
-umount /mnt/sdcard
-umount /mnt/emmc
+umount /mnt
 
 if [[ "$NOBOOTLOGO" == "1" && "$SECONDROM" == "0" ]];then
   /sbin/choose_rom
@@ -66,6 +65,7 @@ CM10=0
 
 if [ "$JB" == 1 ];
 then
+  mv /sbin/adb.jb /sbin/adb
   if [ "$CM10" == 1 ];
   then
     echo 1 > /proc/sys/kernel/rom_feature_set

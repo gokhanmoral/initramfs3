@@ -64,6 +64,7 @@
              <spinnerItem name="ondemand" value="ondemand"/> 
              <spinnerItem name="conservative" value="conservative"/> 
              <spinnerItem name="lulzactive" value="lulzactive"/> 
+             <spinnerItem name="lulzactiveq" value="lulzactiveq"/> 
              <spinnerItem name="smartassV2" value="smartassV2"/> 
              <spinnerItem name="interactive" value="interactive"/> 
        </spinner>
