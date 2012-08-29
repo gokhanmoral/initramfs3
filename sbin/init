@@ -65,7 +65,7 @@ CM10=0
 
 if [ "$JB" == 1 ];
 then
-  mv /sbin/adb.jb /sbin/adb
+  mv -f /sbin/adbd.jb /sbin/adbd
   if [ "$CM10" == 1 ];
   then
     echo 1 > /proc/sys/kernel/rom_feature_set
