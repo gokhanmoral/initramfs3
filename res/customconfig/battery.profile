@@ -50,7 +50,6 @@ GENTLE_FAIR_SLEEPERS=off
 default_stats=off
 mdnie_shortcut_enabled=on
 cfs_tweaks=0
-zram_size=0
 mali_touch_boost_level=1
 soundgasm_hp=0
 
