@@ -22,6 +22,8 @@ fi
 
 SECONDROM=1
 NOBOOTLOGO=0
+mkdir /mnt
+chmod 755 /mnt
 mount -t vfat /dev/block/mmcblk1p1 /mnt && ( touch /mnt/clockworkmod/.nomedia; umount /mnt; )
 mount -t ext4 -o ro /dev/block/mmcblk0p12 /preload
 mount -t vfat /dev/block/mmcblk0p11 /mnt && ( touch /mnt/clockworkmod/.nomedia )
@@ -56,6 +58,7 @@ AOSP=0
 MIUI=0
 B2G=0
 CM10=0
+JB=0
 
 [ -d /system/b2g ] && B2G=1
 [ -f /system/framework/framework2.jar ] || AOSP=1
@@ -105,6 +108,7 @@ else
 fi
 
 umount /system
+rm -rf /res/misc/init*
 chmod 755 /innt
 chmod 644 /*.rc
 chmod 644 /*.prop

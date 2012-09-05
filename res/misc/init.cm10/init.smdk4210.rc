@@ -41,6 +41,7 @@ on fs
 
     mount tmpfs tmpfs /system/lib/modules
     symlink /lib/modules/cifs.ko /system/lib/modules/cifs.ko
+    symlink /lib/modules/j4fs.ko /system/lib/modules/j4fs.ko
     symlink /lib/modules/dhd.ko /system/lib/modules/dhd.ko
     symlink /lib/modules/scsi_wait_scan.ko /system/lib/modules/scsi_wait_scan.ko
     symlink /lib/modules/Si4709_driver.ko /system/lib/modules/Si4709_driver.ko
@@ -63,7 +64,7 @@ on fs
 
 on post-fs-data
 # insmod kernel modules
-    insmod /lib/modules/j4fs.ko
+    insmod /system/lib/modules/j4fs.ko
     insmod /system/lib/modules/Si4709_driver.ko
     
 # mount param.lfs

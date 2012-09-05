@@ -34,7 +34,7 @@ cd /
 eval $(/sbin/read_boot_headers /dev/block/mmcblk0p5)
 dd bs=512 if=/dev/block/mmcblk0p5 skip=$recovery_offset count=$recovery_len | xzcat | tar x
 
-mkdir /mnt/.secondrom
+mkdir -p /mnt/.secondrom
 mount -t vfat /dev/block/mmcblk0p11 /mnt/.secondrom
 mkdir /mnt/.secondrom/.secondrom
 rm /secondrom_cache

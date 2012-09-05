@@ -172,8 +172,6 @@
     <settingsPane description="Other Settings" name="Other Settings">
        <seekBar description="User adjustable gamma shift." 
 		name="Gamma Shift" action="generic /sys/class/lcd/panel/user_gamma_adjust" unit="" min="-50" reversed="false" step="5" max="50"/>
-       <seekBar description="Vibration intensity level" 
-		name="Vibration Intensity" action="generic /sys/vibrator/pwm_val" unit="" min="0" reversed="false" step="5" max="100"/>
        <checkbox description="Enable inverting the screen colors by quickly pressing Home button 4 times" name="mDNIe Negative Toggle" action="generic01 /sys/module/gpio_keys/parameters/mdnie_shortcut_enabled" label="mDNIe Negative Toggle"/>
     </settingsPane>
   </settingsTab>

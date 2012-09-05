@@ -30,7 +30,6 @@ freq_min=200000
 install_root=on
 mov_hysti=5
 suspend_freq=500000
-pwm_val=50
 user_gamma_adjust=0
 blnww=off
 cpustepcount=16
