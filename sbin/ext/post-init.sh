@@ -66,9 +66,11 @@ fi
 
 # for ntfs automounting
 insmod /lib/modules/fuse.ko
-mkdir /mnt/ntfs
+mount -o remount,rw /
+mkdir -p /mnt/ntfs
 mount -t tmpfs tmpfs /mnt/ntfs
 chmod 777 /mnt/ntfs
+mount -o remount,ro /
 
 /sbin/busybox sh /sbin/ext/properties.sh
 
