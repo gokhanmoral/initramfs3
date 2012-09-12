@@ -34,6 +34,8 @@ loglevel 3
     export ASEC_MOUNTPOINT /mnt/asec
     export LOOP_MOUNTPOINT /mnt/obb
     export BOOTCLASSPATH /system/framework/core.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar
+    export TERMINFO /system/etc/terminfo
+    export TERM linux
 
 # Backward compatibility
     symlink /system/etc /etc
@@ -284,6 +286,9 @@ on boot
     chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
     chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 
+    chown system system /sys/block/mmcblk0/queue/scheduler
+    chmod 0664 /sys/block/mmcblk0/queue/scheduler
+
     chown system system /sys/class/timed_output/vibrator/enable
     chown system system /sys/class/leds/keyboard-backlight/brightness
     chown system system /sys/class/leds/lcd-backlight/brightness
@@ -318,8 +323,12 @@ on boot
     setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
     setprop net.tcp.buffersize.umts    4094,87380,563200,4096,16384,110208
     setprop net.tcp.buffersize.hspa    4094,87380,704512,4096,16384,262144
+    setprop net.tcp.buffersize.hsupa   4094,87380,704512,4096,16384,262144
+    setprop net.tcp.buffersize.hsdpa   4094,87380,704512,4096,16384,262144
+    setprop net.tcp.buffersize.hspap   4094,87380,1220608,4096,16384,1220608
     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
+    setprop net.tcp.buffersize.evdo    4094,87380,262144,4096,16384,262144
 
 # allow system to modify ksm control files
     chown root system /sys/kernel/mm/ksm/pages_to_scan
@@ -420,7 +429,7 @@ service ril-daemon /system/bin/rild
     socket rild stream 660 root radio
     socket rild-debug stream 660 radio system
     user root
-    group radio cache inet misc audio sdcard_r sdcard_rw qcom_oncrpc diag log
+    group radio cache inet misc audio sdcard_r sdcard_rw qcom_oncrpc qcom_diag log
 
 service surfaceflinger /system/bin/surfaceflinger
     class main

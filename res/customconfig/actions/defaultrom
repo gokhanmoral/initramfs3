@@ -1,0 +1,11 @@
+#!/sbin/busybox sh
+
+if [ "a$2" != "a" ];then
+  echo $2 > $EXTERNAL_STORAGE/.defaultrom
+fi
+
+if [ -f $EXTERNAL_STORAGE/.defaultrom ];then
+  cat $EXTERNAL_STORAGE/.defaultrom
+else
+  echo 0
+fi

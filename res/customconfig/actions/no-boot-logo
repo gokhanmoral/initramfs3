@@ -1,0 +1,18 @@
+#!/sbin/busybox sh
+
+if [ "a$2" != "a" ];then
+  case "$2" in
+    on)
+      echo 1 > $EXTERNAL_STORAGE/.nobootlogo
+      ;;
+    off)
+      rm -f $EXTERNAL_STORAGE/.nobootlogo
+      ;;
+  esac;
+fi
+
+if [ -f $EXTERNAL_STORAGE/.nobootlogo ];then
+  echo on
+else
+  echo off
+fi

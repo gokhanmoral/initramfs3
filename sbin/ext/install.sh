@@ -52,6 +52,24 @@ then
   fi
 fi;
 
+echo "Checking if STweaks is installed"
+if [ ! -f /system/.siyah/stweaks-installed ];
+then
+#  if [ "$payload_extracted" == "0" ];then
+#    extract_payload
+#  fi
+  rm /system/app/STweaks.apk
+  rm /data/app/com.gokhanmoral.STweaks*.apk
+  rm /data/dalvik-cache/*STweaks.apk*
+
+  cat /res/STweaks.apk > /system/app/STweaks.apk
+  chown 0.0 /system/app/STweaks.apk
+  chmod 644 /system/app/STweaks.apk
+  mkdir /system/.siyah
+  chmod 755 /system/.siyah
+  echo 1 > /system/.siyah/stweaks-installed
+fi
+
 echo "Checking if cwmanager is installed"
 if [ ! -f /system/.siyah/cwmmanager3-installed ];
 then

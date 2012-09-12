@@ -14,15 +14,23 @@ then
   echo ${ccxmlsum} > /data/.siyah/.ccxmlsum
 fi
 [ ! -f /data/.siyah/default.profile ] && cp /res/customconfig/default.profile /data/.siyah
-[ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah
-[ ! -f /data/.siyah/performance.profile ] && cp /res/customconfig/performance.profile /data/.siyah
+[ ! -f /data/.siyah/battery.profile ] && cp /res/customconfig/battery.profile /data/.siyah/battery.profile
+[ ! -f /data/.siyah/performance.profile ] && cp /res/customconfig/performance.profile /data/.siyah/performance.profile
 
 . /res/customconfig/customconfig-helper
 read_defaults
 read_config
 
+#default cpu gov.
+echo pegasusq > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+
 #cpu undervolting
 echo "${cpu_undervolting}" > /sys/devices/system/cpu/cpu0/cpufreq/vdd_levels
+
+#mdnie sharpness tweak
+if [ "$mdniemod" == "on" ];then
+. /sbin/ext/mdnie-sharpness-tweak.sh
+fi
 
 #change cpu step count
 case "${cpustepcount}" in
@@ -68,16 +76,13 @@ fi
 insmod /lib/modules/fuse.ko
 mount -o remount,rw /
 mkdir -p /mnt/ntfs
-mount -t tmpfs tmpfs /mnt/ntfs
 chmod 777 /mnt/ntfs
+mount -o mode=0777,gid=1000 -t tmpfs tmpfs /mnt/ntfs
 mount -o remount,ro /
 
 /sbin/busybox sh /sbin/ext/properties.sh
 
 /sbin/busybox sh /sbin/ext/install.sh
-
-# run this because user may have chosen not to install root at boot but he may need it later and install it using ExTweaks
-/sbin/busybox sh /sbin/ext/su-helper.sh
 
 ##### Early-init phase tweaks #####
 /sbin/busybox sh /sbin/ext/tweaks.sh

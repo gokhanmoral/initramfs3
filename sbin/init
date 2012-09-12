@@ -3,7 +3,6 @@ cd /
 
 busybox mount -t proc proc /proc
 busybox mount -t sysfs sysfs /sys
-tar xvf /res/misc/dev.tar
 
 if grep -q bootmode=2 /proc/cmdline ; then
   cp -a /res/misc/init.40/* /
@@ -17,16 +16,41 @@ if busybox grep -q 1 /sys/class/power_supply/battery/batt_lp_charging ; then
   cp -a /res/misc/init.40/* /
   cp lpm.rc init.rc
   rm init.smdk4210.rc
+  chmod 755 /innt
+  chmod 644 /*.rc
+  chmod 644 /*.prop
   exec /sbin/init2
 fi
 
 SECONDROM=1
 NOBOOTLOGO=0
-mkdir /mnt
+mkdir -p /dev/block
+mkdir /dev/input
+mkdir /dev/graphics
+mknod /dev/graphics/fb0 c 29 0
+mknod /dev/input/event1 c 13 65
+mknod /dev/input/event2 c 13 66
+mknod /dev/input/event8 c 13 72
+mknod /dev/input/event9 c 13 73
+mknod /dev/ashmem c 10 61
+mknod /dev/block/mmcblk0p7 b 179 7
+mknod /dev/block/mmcblk0p9 b 259 1
+mknod /dev/block/mmcblk0p10 b 259 2
+mknod /dev/block/mmcblk0p11 b 259 3
+mknod /dev/block/mmcblk0p12 b 259 4
+mknod /dev/block/loop0 b 7 0
+
+mkdir -p /mnt/.secondrom
 chmod 755 /mnt
-mount -t vfat /dev/block/mmcblk1p1 /mnt && ( touch /mnt/clockworkmod/.nomedia; umount /mnt; )
+mkdir /preload
 mount -t ext4 -o ro /dev/block/mmcblk0p12 /preload
-mount -t vfat /dev/block/mmcblk0p11 /mnt && ( touch /mnt/clockworkmod/.nomedia )
+
+mount -t vfat /dev/block/mmcblk0p11 /mnt
+NEXTBOOT=`cat /mnt/.nextboot`
+rm -f /mnt/.nextboot
+DEFAULTROM=`cat /mnt/.defaultrom`
+SECONDROM=1
+NOBOOTLOGO=0
 [ -f /preload/build.prop ] || SECONDROM=0
 [ -f /mnt/.secondrom/data.img ] || SECONDROM=0
 [ -f /mnt/.secondrom/cache.img ] || SECONDROM=0
@@ -34,25 +58,51 @@ mount -t vfat /dev/block/mmcblk0p11 /mnt && ( touch /mnt/clockworkmod/.nomedia )
 umount /preload
 umount /mnt
 
-if [[ "$NOBOOTLOGO" == "1" && "$SECONDROM" == "0" ]];then
-  /sbin/choose_rom
+if [ "$SECONDROM" == "0" ];then
+  if [ "$NOBOOTLOGO" == "0" ];then
+    /sbin/choose_rom $SECONDROM
+  fi
 else
-  /sbin/choose_rom $SECONDROM
+  if [ "$NEXTBOOT" == "1" ];then
+    SECONDROM=0;
+  elif [ "$NEXTBOOT" == "2" ];then
+    SECONDROM=1;
+  else
+    if [ "$NOBOOTLOGO" == "1" ];then
+      SECONDROM=$DEFAULTROM
+    elif [ "$DEFAULTROM" == "1" ];then
+      /sbin/choose_rom $SECONDROM
+      if [ "$?" == "1" ]; then
+        SECONDROM=0
+      else
+        SECONDROM=1
+      fi
+    else
+      /sbin/choose_rom $SECONDROM
+      if [ "$?" == "1" ]; then
+        SECONDROM=1
+      else
+        SECONDROM=0
+      fi
+    fi
+  fi
 fi
 
-if [ "$?" == "1" ]; then
-  SECONDROM=1
+if [ "$SECONDROM" == "1" ]; then
+  rm -rf /res/dev
+  mkdir -p /res/dev
+  ln -s /mnt/.secondrom/.secondrom/data.img /res/dev/data
+  ln -s /dev/block/mmcblk0p12 /res/dev/system
+  ln -s /mnt/.secondrom/.secondrom/cache.img /res/dev/cache
 else
-  SECONDROM=0
+  rm -rf /res/dev
+  mkdir -p /res/dev
+  ln -s /dev/block/mmcblk0p10 /res/dev/data
+  ln -s /dev/block/mmcblk0p9 /res/dev/system
+  ln -s /dev/block/mmcblk0p7 /res/dev/cache
 fi
 
-/sbin/busybox mount -t ext4 /res/dev/system /system
-
-if [ -f /system/recovery.cpio.gz ];
-then
-mount -o remount,rw /
-zcat /system/recovery.cpio.gz | cpio -idmu
-fi;
+mount -t ext4 /res/dev/system /system
 
 AOSP=0
 MIUI=0
@@ -71,19 +121,20 @@ then
   mv -f /sbin/adbd.jb /sbin/adbd
   if [ "$CM10" == 1 ];
   then
-    echo 1 > /proc/sys/kernel/rom_feature_set
-rm -rf /vendor
+    echo 3 > /proc/sys/kernel/rom_feature_set
+    rm -rf /vendor
     mv -f /res/misc/init.cm10/* /
   else
-    echo 0 > /proc/sys/kernel/rom_feature_set
+    echo 2 > /proc/sys/kernel/rom_feature_set
     mv -f /res/misc/init.41/* /
   fi
 else
   if [ "$B2G" == 1 ];
   then
+    echo 0 > /proc/sys/kernel/rom_feature_set
+    rm -rf /vendor
     cp -a /res/misc/init.b2g/* /
-  fi;
-
+  else
   if [ "$AOSP" == "1" ];
   then
     echo 1 > /proc/sys/kernel/rom_feature_set
@@ -98,6 +149,7 @@ else
   then
     cp -a /res/misc/init.miui/* /
   fi
+  fi;
 fi
 
 if [ "$SECONDROM" == "1" ];then
@@ -112,4 +164,16 @@ rm -rf /res/misc/init*
 chmod 755 /innt
 chmod 644 /*.rc
 chmod 644 /*.prop
+chmod -R 755 /lib
+
+# cpu undervolting interfaces
+insmod /lib/modules/cpu_undervolting.ko
+# mali (gpu) interfaces
+insmod /lib/modules/mali_control.ko
+# additional CPU governors
+insmod /lib/modules/cpufreq_hotplug.ko
+insmod /lib/modules/cpufreq_lulzactiveq.ko
+# additional I/O schedulers
+insmod /lib/modules/sio-iosched.ko
+insmod /lib/modules/vr-iosched.ko
 exec /sbin/init2

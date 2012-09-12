@@ -1,0 +1,20 @@
+#!/sbin/busybox sh
+
+if [ "a$3" == "a" ]; then
+	evalcmd='eval "echo \$sound_volume$2"';
+	eval $evalcmd;
+else
+	evalcmd='eval "sound_volume$2=$3"';
+	eval $evalcmd;
+	evalcmd='eval "echo \$sound_volume$2"';
+	eval $evalcmd;
+fi;
+
+if [ -d /sys/devices/virtual/sound/sound_mc1n2/ ]; then
+	# set MIC gain volume.
+	echo "$sound_volume1" > /sys/devices/virtual/sound/sound_mc1n2/AVOL_RC;
+	echo "1" > /sys/devices/virtual/sound/sound_mc1n2/update_volume;
+	# set speaker volume
+	echo "$sound_volume2" > /sys/devices/virtual/sound/sound_mc1n2/AVOL_SP;
+	echo "1" > /sys/devices/virtual/sound/sound_mc1n2/update_volume;
+fi;

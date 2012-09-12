@@ -8,9 +8,8 @@ else
   eval $evalcmd
   evalcmd='eval "echo \$GPUVOLT$2"'
   eval $evalcmd
-fi
-
-if [ -f /sys/class/misc/gpu_voltage_control/gpu_control ];then
-echo "${GPUVOLT1}000 ${GPUVOLT2}000 ${GPUVOLT3}000 ${GPUVOLT4}000" > /sys/class/misc/gpu_voltage_control/gpu_control
+  if [ -f /sys/class/misc/mali_control/voltage_control ];then
+    echo "${GPUVOLT1}000 ${GPUVOLT2}000 ${GPUVOLT3}000 ${GPUVOLT4}000 ${GPUVOLT5}000" > /sys/class/misc/mali_control/voltage_control
+  fi
 fi
 

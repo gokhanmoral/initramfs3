@@ -11,9 +11,7 @@ else
   # echo back
   evalcmd='eval "echo \$GPUSTAYCOUNT$2"'
   eval $evalcmd
-fi
-
-# we need to set all three of them
-if [ -f /sys/class/misc/gpu_clock_control/gpu_staycount ];then
-echo "$GPUSTAYCOUNT1 $GPUSTAYCOUNT2 $GPUSTAYCOUNT3 $GPUSTAYCOUNT4" > /sys/class/misc/gpu_clock_control/gpu_staycount
+  if [ -f /sys/class/misc/mali_control/staycount_control ];then
+    echo "$GPUSTAYCOUNT1 $GPUSTAYCOUNT2 $GPUSTAYCOUNT3 $GPUSTAYCOUNT4 $GPUSTAYCOUNT5" > /sys/class/misc/mali_control/staycount_control
+  fi
 fi

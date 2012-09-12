@@ -1,0 +1,10 @@
+#!/sbin/busybox sh
+
+if [ "a$2" != "a" ];then
+  if [ "$2" == "0" ];then
+    reboot recovery
+  else
+    echo $2 > $EXTERNAL_STORAGE/.nextboot
+    reboot
+  fi
+fi

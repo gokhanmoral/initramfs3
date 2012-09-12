@@ -1,0 +1,27 @@
+#!/sbin/busybox sh
+
+if [ "a$2" != "a" ];then
+  overclock=$2
+fi
+
+findex=8
+[ "`kmemhelper -t int -n exynos4x12_freq_table -o  4`" == "1400000" ] && findex=0
+[ "`kmemhelper -t int -n exynos4x12_freq_table -o 12`" == "1400000" ] && findex=4
+[ "`kmemhelper -t int -n exynos4x12_freq_table -o 20`" == "1400000" ] && findex=8
+[ "`kmemhelper -t int -n exynos4x12_freq_table -o 28`" == "1400000" ] && findex=12
+[ "`kmemhelper -t int -n exynos4x12_freq_table -o 36`" == "1400000" ] && findex=16
+[ "`kmemhelper -t int -n exynos4x12_freq_table -o 44`" == "1400000" ] && findex=20
+
+case "${overclock}" in
+  1400)
+	kmemhelper -t int -n exynos4x12_apll_pms_table -o $findex 11469568
+	;;
+  1500)
+	kmemhelper -t int -n exynos4x12_apll_pms_table -o $findex 16385024
+	;;
+  1600)
+	kmemhelper -t int -n exynos4x12_apll_pms_table -o $findex 13107968
+	;;
+esac;
+
+echo $overclock

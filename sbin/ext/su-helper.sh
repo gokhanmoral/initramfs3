@@ -8,11 +8,11 @@ while : ; do
 	if [ -e /data/.siyah/install-root ] ; then
 		rm /data/.siyah/install-root
 		/sbin/busybox sh /sbin/ext/install.sh
-        	exit 0
+		exit 0
 	fi
 	if [ -e /system/xbin/su ] ; then
-                exit 0
-        fi
-        sleep 5
+		exit 0
+	fi
+	sleep 5
 done
 ) &
