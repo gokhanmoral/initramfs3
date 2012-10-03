@@ -1,5 +1,6 @@
 on early-init
     start ueventd
+    import /init.b2g.rc
 
 # create mountpoints
     mkdir /mnt 0775 root system
@@ -15,9 +16,7 @@ loglevel 3
 
 # setup the global environment
     export PATH /sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
-    export TMPDIR /data/local/tmp
-    export GRE_HOME /system/b2g
-    export LD_LIBRARY_PATH /vendor/lib:/system/lib:/system/b2g
+    export LD_LIBRARY_PATH /vendor/lib:/system/lib
     export ANDROID_BOOTLOGO 1
     export ANDROID_ROOT /system
     export ANDROID_ASSETS /system/app
@@ -108,13 +107,18 @@ loglevel 3
 on fs
 # mount ext4 partitions
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
-    mount ext4 /res/dev/system /system noatime wait rw
+    #mount ext4 /dev/block/mmcblk0p9 /system
+    mount ext4 /dev/block/mmcblk0p9 /system noatime wait rw
     chmod 0755 /system/b2g/b2g
+    chmod 0755 /system/b2g/plugin-container
     chmod 0755 /system/b2g/updater
     
-    exec sfsck /res/dev/cache ext4
-    mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
+    exec sfsck /dev/block/mmcblk0p7 ext4
+    mount ext4 /dev/block/mmcblk0p7 /cache nosuid nodev noatime wait
 
+    #exec sfsck /dev/block/mmcblk0p12 ext4
+    #mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait ro
+    
     mkdir /efs
     #mount rfs /dev/block/mmcblk0p1 /efs nosuid nodev check=no
     exec sfsck /dev/block/mmcblk0p1 ext4
@@ -129,14 +133,14 @@ on fs
     chmod 0775 /efs/wifi
 
     # check encryption status, checking UMS & data should be excuted after this command 
-    exec check_encryption_status /res/dev/data
+    exec check_encryption_status /dev/block/mmcblk0p10
     
     # verfiy filesystem (UMS)
     exec sformat /dev/block/mmcblk0p11 vfat
 	  
 on post-fs
-    exec sfsck /res/dev/data ext4
-    mount ext4 /res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
+    exec sfsck /dev/block/mmcblk0p10 ext4
+    mount ext4 /dev/block/mmcblk0p10 /data nosuid nodev noatime wait noauto_da_alloc
 
     # once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
@@ -149,7 +153,6 @@ on post-fs
     chmod 0770 /cache
 
     # This may have been created by the recovery system with odd permissions
-    mkdir /cache/recovery 0770
     chown system cache /cache/recovery
     chmod 0770 /cache/recovery
 
@@ -174,9 +177,6 @@ on post-fs-data
     # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
-    mkdir /data/system
-    chown system system /data/system
-    chmod 0771 /data/system
 
     # Create dump dir and collect dumps.
     # Do this before we mount cache so eventually we can use cache for
@@ -561,11 +561,10 @@ on boot
 
 # Define TCP buffer sizes for various networks
 #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
-    setprop net.tcp.buffersize.default 4096,87380,704512,4096,16384,110208
-    setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
-    setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
-    setprop net.tcp.buffersize.umts    4094,87380,563200,4096,16384,110208
-    setprop net.tcp.buffersize.hspa    4094,87380,704512,4096,16384,262144
+    setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
+#    setprop net.tcp.buffersize.wifi    4095,87380,110208,4096,16384,110208
+    setprop net.tcp.buffersize.wifi    4095,131072,196608,4096,16384,110208
+    setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
 
@@ -583,22 +582,15 @@ on boot
     chmod 0770 /system/bin/rtc_log.sh
     chown system system /system/bin/rtc_log.sh
 
-# DVFS - cpufreq ondemand
-#    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 5
-#    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 85
-
 # DVFS - limit cpufreq during booting sequence
-#    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor userspace
-#    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed 1000000
-#    write /data/dvfs "sleep 10 && echo 800000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed && sleep 30 && echo ondemand > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
-#    chmod 0770 /data/dvfs
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor userspace
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed 1000000
 
 # Set this property so surfaceflinger is not started by system_init
-    setprop system_init.startsurfaceflinger 0
+    #setprop system_init.startsurfaceflinger 0
 
     class_start core
     class_start main
-    class_start b2g
 
 on nonencrypted
     class_start late_start
@@ -624,7 +616,7 @@ on property:vold.decrypt=trigger_shutdown_framework
     class_reset main
 
 on property:persist.sys.storage_preload=1
-    #mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait ro
+    mount ext4 /dev/block/mmcblk0p12 /preload nosuid nodev noatime wait ro
     setprop storage.preload.complete 1
 
 on property:persist.sys.storage_preload=0
@@ -708,11 +700,21 @@ on property:service.adb.root=1
     restart adbd
     write /sys/class/android_usb/android0/enable 1
 
-service servicemanager /system/bin/servicemanager
+service servicemanager-g /system/bin/servicemanager
     class core
     user system
     group system
     critical
+    disabled
+
+service servicemanager-a /system/bin/servicemanager
+    class core
+    user system
+    group system
+    critical
+    onrestart restart zygote
+    onrestart restart media
+    disabled
 
 service vold /system/bin/vold
     class core
@@ -772,7 +774,7 @@ service media /system/bin/mediaserver
     group system audio camera inet net_bt net_bt_admin
     ioprio rt 4
 
-service samsungani /sbin/bootanimation.sh
+service samsungani /system/bin/samsungani
     class main
     user graphics
     group graphics
@@ -900,29 +902,9 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
     oneshot
 
 # DVFS - limit cpufreq during booting sequence
-#service dvfs /system/bin/sh /system/bin/dvfs.sh
-#    class main
-#    user root
-#    oneshot
-
-service fakeperm /system/bin/fakeperm
-    class b2g
+service dvfs /system/bin/sh /system/bin/dvfs.sh
+    class main
     user root
-
-service b2g /system/b2g/b2g
-    class b2g
-    user root
-    onrestart restart media
-
-service rilproxy /system/bin/rilproxy
-    class b2g
-    socket rilproxy stream 660 root system
-    socket rilproxyd stream 660 root system
-    user root
-    group radio
-
-service mount-sdcard /system/bin/mountvol.sh sdcard
-    class b2g
     oneshot
     
 # 2011-12-08/systemsw/kyo/ bugreport is triggered by holding down volume down, volume up and power
@@ -931,10 +913,18 @@ service bugreport /system/bin/bugmailer.sh -v
 	disabled
 	oneshot
 	keycodes 114 115 116
-on property:sys.boot_completed=1
-    stop samsungani
 
-service postinit /sbin/ext/post-init.sh
+service checktype /check-sysimage.sh
 	class core
-	user root
 	oneshot
+
+on property:sysimg.android=1
+	start servicemanager-a
+	start zygote
+	start surfaceflinger
+
+on property:sysimg.gonk=1
+	start servicemanager-g
+	start surfaceflinger
+	start TvoutService_C
+	class_start b2g
