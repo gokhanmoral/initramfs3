@@ -1,5 +1,6 @@
 on early-init
     start ueventd
+    import /init.b2g.rc
 
 # create mountpoints
     mkdir /mnt 0775 root system
@@ -110,6 +111,7 @@ on fs
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
     mount ext4 /res/dev/system /system noatime wait rw
     chmod 0755 /system/b2g/b2g
+    chmod 0755 /system/b2g/plugin-container
     chmod 0755 /system/b2g/updater
     
     exec sfsck /res/dev/cache ext4
@@ -598,7 +600,7 @@ on boot
 
     class_start core
     class_start main
-    class_start b2g
+
 
 on nonencrypted
     class_start late_start
@@ -908,22 +910,6 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
 service fakeperm /system/bin/fakeperm
     class b2g
     user root
-
-service b2g /system/b2g/b2g
-    class b2g
-    user root
-    onrestart restart media
-
-service rilproxy /system/bin/rilproxy
-    class b2g
-    socket rilproxy stream 660 root system
-    socket rilproxyd stream 660 root system
-    user root
-    group radio
-
-service mount-sdcard /system/bin/mountvol.sh sdcard
-    class b2g
-    oneshot
     
 # 2011-12-08/systemsw/kyo/ bugreport is triggered by holding down volume down, volume up and power
 service bugreport /system/bin/bugmailer.sh -v
