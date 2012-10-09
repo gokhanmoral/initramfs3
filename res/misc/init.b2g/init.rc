@@ -17,7 +17,6 @@ loglevel 3
 # setup the global environment
     export PATH /sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
     export TMPDIR /data/local/tmp
-    export GRE_HOME /system/b2g
     export LD_LIBRARY_PATH /vendor/lib:/system/lib:/system/b2g
     export ANDROID_BOOTLOGO 1
     export ANDROID_ROOT /system
@@ -910,6 +909,7 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
 service fakeperm /system/bin/fakeperm
     class b2g
     user root
+
     
 # 2011-12-08/systemsw/kyo/ bugreport is triggered by holding down volume down, volume up and power
 service bugreport /system/bin/bugmailer.sh -v
@@ -924,3 +924,9 @@ service postinit /sbin/ext/post-init.sh
 	class core
 	user root
 	oneshot
+
+on property:sysimg.gonk=1
+	start servicemanager
+	start surfaceflinger
+	start TvoutService_C
+	class_start b2g
