@@ -3,7 +3,7 @@
 # remount partitions with noatime
 for k in $(mount | grep relatime | cut -d " " -f3);
 do
-mount -o remount,noatime,nodiratime,noauto_da_alloc,barrier=0 $k
+mount -o remount,noatime $k
 done;
 
 echo 256 > /sys/block/mmcblk0/bdi/read_ahead_kb
