@@ -1,6 +1,5 @@
 on early-init
     start ueventd
-    import /init.b2g.rc
 
 # create mountpoints
     mkdir /mnt 0775 root system
@@ -109,9 +108,6 @@ on fs
 # mount ext4 partitions
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
     mount ext4 /res/dev/system /system noatime wait rw
-    chmod 0755 /system/b2g/b2g
-    chmod 0755 /system/b2g/plugin-container
-    chmod 0755 /system/b2g/updater
     
     exec sfsck /res/dev/cache ext4
     mount ext4 /res/dev/cache /cache nosuid nodev noatime wait
@@ -595,7 +591,7 @@ on boot
 #    chmod 0770 /data/dvfs
 
 # Set this property so surfaceflinger is not started by system_init
-    setprop system_init.startsurfaceflinger 0
+    setprop system_init.startsurfaceflinger 1
 
     class_start core
     class_start main
@@ -713,6 +709,10 @@ service servicemanager /system/bin/servicemanager
     class core
     user system
     group system
+    onrestart restart zygote
+    onrestart restart media
+    onrestart restart surfaceflinger
+    onrestart restart drm
     critical
 
 service vold /system/bin/vold
@@ -760,7 +760,6 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
     onrestart write /sys/power/state on
     onrestart restart media
     onrestart restart netd
-    disabled
 
 service drm /system/bin/drmserver
     class main
@@ -906,10 +905,6 @@ service rtc_log /system/bin/sh /system/bin/rtc_log.sh
 #    user root
 #    oneshot
 
-service fakeperm /system/bin/fakeperm
-    class b2g
-    user root
-
     
 # 2011-12-08/systemsw/kyo/ bugreport is triggered by holding down volume down, volume up and power
 service bugreport /system/bin/bugmailer.sh -v
@@ -925,8 +920,3 @@ service postinit /sbin/ext/post-init.sh
 	user root
 	oneshot
 
-on property:sysimg.gonk=1
-	start servicemanager
-	start surfaceflinger
-	start TvoutService_C
-	class_start b2g
