@@ -1,9 +1,6 @@
 #!/sbin/busybox sh
 
-if [ "a$2" == "a" ];then
-exit
-fi
-
+if [ "a$2" != "a" ];then
 filename=$(basename $2)
 
 if [ "a$3" == "a" ];then
@@ -24,6 +21,7 @@ else
         ;;
     esac;
   fi
+fi
 fi
 
 

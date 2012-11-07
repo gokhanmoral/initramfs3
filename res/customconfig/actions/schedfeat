@@ -1,8 +1,6 @@
 #!/sbin/busybox sh
 
-if [ "a$2" == "a" ];then
-exit
-fi
+if [ "a$2" != "a" ];then
 
 if [ "a$3" == "a" ];then
   evalcmd='eval "echo \$$2"'
@@ -24,3 +22,4 @@ else
   fi
 fi
 
+fi
