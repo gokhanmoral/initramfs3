@@ -3,7 +3,7 @@
 # remount partitions with noatime
 for k in $(mount | grep relatime | cut -d " " -f3);
 do
-mount -o remount,noatime $k
+mount -o remount,noatime,nodiratime,noauto_da_alloc,barrier=0 $k
 done;
 
 echo 256 > /sys/block/mmcblk0/bdi/read_ahead_kb
@@ -25,10 +25,6 @@ cat /proc/version | grep infra && (kmemhelper -t string -n linux_proc_banner -o 
 # "...facilitating cache sharing and reduced off-chip traffic"
 echo 2 > /sys/devices/system/cpu/sched_mc_power_savings
 
-# my favorite mdnie settings for red and blue
-#echo "1" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_mode
-#echo "132" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cb
-#echo "122" > /sys/devices/platform/samsung-pd.2/mdnie/mdnie/mdnie/user_cr
 
 # process priority modifications
 # (
