@@ -62,5 +62,6 @@ soundgasm_hp=0
 dyn_brightness=off
 sound_volume1=0
 sound_volume2=0
+sound_volume3=0
 fbearlysuspend_delay0=0
 

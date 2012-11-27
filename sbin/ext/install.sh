@@ -53,14 +53,21 @@ then
 fi;
 
 echo "Checking if STweaks is installed"
-if [ ! -f /system/.siyah/stweaks-installed ];
-then
-#  if [ "$payload_extracted" == "0" ];then
-#    extract_payload
-#  fi
+stmd5sum=`/sbin/busybox md5sum /system/app/STweaks.apk | /sbin/busybox awk '{print $1}'`
+if [ "$stmd5sum" == "0936a23cbcf1092be8fba4a8905fcd22" ];then
+installstweaks=1
+fi
+
+if [ ! -f /system/.siyah/stweaks-installed ]; then
+installstweaks=1
+fi
+
+if [ "$installstweaks" == "1" ];then
   rm /system/app/STweaks.apk
-  rm /data/app/com.gokhanmoral.STweaks*.apk
-  rm /data/dalvik-cache/*STweaks.apk*
+  rm -f /data/app/com.gokhanmoral.STweaks*
+  rm -f /data/dalvik-cache/*STweaks.*
+  rm -f /data/app/com.gokhanmoral.stweaks*
+  rm -f /data/dalvik-cache/*stweaks*
 
   cat /res/STweaks.apk > /system/app/STweaks.apk
   chown 0.0 /system/app/STweaks.apk
