@@ -138,9 +138,11 @@ on fs
     exec check_encryption_status /res/dev/data
     
 on post-fs
-    exec sfsck /res/dev/data ext4
-    mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
-
+    #exec sfsck /res/dev/data ext4
+    #mount ext4 loop@/res/dev/data /data nosuid nodev noatime wait noauto_da_alloc
+    exec sfsck /dev/block/mmcblk0p10 ext4
+    mount ext4 /dev/block/mmcblk0p10 /data nosuid nodev noatime wait noauto_da_alloc
+	
     # once everything is setup, no need to modify /
     mount rootfs rootfs / ro remount
 
@@ -597,7 +599,7 @@ on boot
 #    chmod 0770 /data/dvfs
 
 # Set this property so surfaceflinger is not started by system_init
-    setprop system_init.startsurfaceflinger 0
+    #setprop system_init.startsurfaceflinger 0
 
     class_start core
     class_start main
@@ -752,17 +754,6 @@ service surfaceflinger /system/bin/surfaceflinger
     class main
     user system
     group graphics
-    onrestart restart zygote
-    disabled
-
-service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
-    class main
-    socket zygote stream 666
-    onrestart write /sys/android_power/request_state wake
-    onrestart write /sys/power/state on
-    onrestart restart media
-    onrestart restart netd
-    disabled
 
 service drm /system/bin/drmserver
     class main
@@ -828,9 +819,10 @@ service dhcpcd_bnep0 /system/bin/dhcpcd -ABKL
 	disabled
 	oneshot
 
-service installd /system/bin/installd
-    class main
-    socket installd stream 600 system system
+#FirefoxOS doesn't supports Android's APK installables 
+#service installd /system/bin/installd
+#    class main
+#    socket installd stream 600 system system
 
 service flash_recovery /system/etc/install-recovery.sh
     class main
@@ -925,10 +917,8 @@ on property:sys.boot_completed=1
 service postinit /sbin/ext/post-init.sh
 	class core
 	user root
-	oneshot
-
-on property:sysimg.gonk=1
 	start servicemanager
 	start surfaceflinger
 	start TvoutService_C
 	class_start b2g
+	oneshot
